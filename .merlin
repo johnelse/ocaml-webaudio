@@ -1,0 +1,4 @@
+PKG js_of_ocaml js_of_ocaml.syntax
+S lib
+
+B _build/lib
