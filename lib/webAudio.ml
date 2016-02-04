@@ -1,6 +1,14 @@
 class type audioParam = object
   method defaultValue : float Js.readonly_prop
   method value : float Js.prop
+
+  method cancelScheduledValues : float -> unit Js.meth
+  method exponentialRampToValueAtTime : float -> float -> unit Js.meth
+  method linearRampToValueAtTime : float -> float -> unit Js.meth
+  method setTargetAtTime : float -> float -> float -> unit Js.meth
+  method setValueAtTime : float -> float -> unit Js.meth
+  method setValueCurveAtTime :
+    Typed_array.float32Array Js.t -> float -> float -> unit Js.meth
 end
 
 class type audioNode = object
