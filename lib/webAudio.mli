@@ -27,7 +27,7 @@ and oscillatorNode = object
 end
 
 and audioContext = object
-  method currentTime : int Js.readonly_prop
+  method currentTime : float Js.readonly_prop
   method destination : audioDestinationNode Js.t Js.readonly_prop
   method sampleRate : float Js.readonly_prop
 
