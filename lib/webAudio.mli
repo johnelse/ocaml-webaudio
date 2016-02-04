@@ -1,6 +1,6 @@
 class type audioParam = object
-  method value : float Js.prop
   method defaultValue : float Js.readonly_prop
+  method value : float Js.prop
 end
 
 class type audioNode = object
