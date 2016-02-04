@@ -1,4 +1,14 @@
-class type audioParam = object
+class type audioNode = object
+  method context : audioContext Js.t Js.readonly_prop
+  method numberOfInputs : int Js.readonly_prop
+  method numberOfOutputs : int Js.readonly_prop
+
+  method connect : audioNode Js.t -> unit Js.meth
+  method disconnect : unit Js.meth
+end
+
+and audioParam = object
+  inherit audioNode
   method defaultValue : float Js.readonly_prop
   method value : float Js.prop
 
@@ -9,15 +19,6 @@ class type audioParam = object
   method setValueAtTime : float -> float -> unit Js.meth
   method setValueCurveAtTime :
     Typed_array.float32Array Js.t -> float -> float -> unit Js.meth
-end
-
-class type audioNode = object
-  method context : audioContext Js.t Js.readonly_prop
-  method numberOfInputs : int Js.readonly_prop
-  method numberOfOutputs : int Js.readonly_prop
-
-  method connect : audioNode Js.t -> unit Js.meth
-  method disconnect : unit Js.meth
 end
 
 and audioDestinationNode = object
