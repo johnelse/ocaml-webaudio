@@ -43,6 +43,9 @@ and audioContext = object
   method createOscillator : oscillatorNode Js.t Js.meth
 end
 
-let audioContext = Js.Unsafe.global##_AudioContext
+let audioContext =
+  Js.Optdef.get
+    (Js.Unsafe.global##_AudioContext)
+    (fun () -> Js.Unsafe.global##webkitAudioContext)
 
 let is_supported () = Js.Optdef.test audioContext
