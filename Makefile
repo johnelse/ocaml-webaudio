@@ -1,7 +1,7 @@
-# OASIS_START
-# DO NOT EDIT (digest: a3c674b4239234cbbe53afe090018954)
+all: build
 
-SETUP = ocaml setup.ml
+NAME=webaudio
+SETUP=ocaml setup.ml
 
 build: setup.data
 	$(SETUP) -build $(BUILDFLAGS)
@@ -12,16 +12,14 @@ doc: setup.data build
 test: setup.data build
 	$(SETUP) -test $(TESTFLAGS)
 
-all:
-	$(SETUP) -all $(ALLFLAGS)
-
 install: setup.data
 	$(SETUP) -install $(INSTALLFLAGS)
 
 uninstall: setup.data
-	$(SETUP) -uninstall $(UNINSTALLFLAGS)
+	ocamlfind remove $(NAME)
 
 reinstall: setup.data
+	ocamlfind remove $(NAME) || true
 	$(SETUP) -reinstall $(REINSTALLFLAGS)
 
 clean:
@@ -37,5 +35,3 @@ configure:
 	$(SETUP) -configure $(CONFIGUREFLAGS)
 
 .PHONY: build doc test all install uninstall reinstall clean distclean configure
-
-# OASIS_STOP
