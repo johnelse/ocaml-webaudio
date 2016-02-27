@@ -28,6 +28,7 @@ end
 and oscillatorNode = object
   inherit audioNode
 
+  method detune : audioParam Js.t Js.prop
   method frequency : audioParam Js.t Js.prop
   method _type : Js.js_string Js.t Js.prop
 
