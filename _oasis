@@ -18,3 +18,4 @@ Executable test
   Path:               test
   MainIs:             test.ml
   BuildDepends:       threads, webaudio
+  Install:            false
