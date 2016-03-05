@@ -54,3 +54,13 @@ let run log test =
 
 let (>::) label f = TestCase (label, f)
 let (>:::) label tests = TestList (label, tests)
+
+let finally f cleanup =
+  let result =
+    try f ()
+    with e ->
+      cleanup ();
+      raise e
+  in
+  cleanup ();
+  result
