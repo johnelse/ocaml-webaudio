@@ -3,9 +3,22 @@ module Html = Dom_html
 let (>::) = Test_utils.(>::)
 let (>:::) = Test_utils.(>:::)
 
-let test_make_context () =
+let finally f cleanup =
+  let result =
+    try f ()
+    with e ->
+      cleanup ();
+      raise e
+  in
+  cleanup ();
+  result
+
+let with_context f =
   let context = jsnew WebAudio.audioContext () in
-  context##close ()
+  finally (fun () -> f context) (fun () -> context##close ())
+
+let test_make_context () =
+  with_context (fun _ -> ())
 
 let suite =
   "base_suite" >::: [
@@ -16,16 +29,6 @@ let run_suite log =
   let open Test_utils in
   let (_ : result list) = run log suite in
   Js._false
-
-let finally f cleanup =
-  let result =
-    try f ()
-    with e ->
-      cleanup ();
-      raise e
-  in
-  cleanup ();
-  result
 
 let with_button_disabled button f =
   (Js.Unsafe.coerce button)##disabled <- Js._true;
