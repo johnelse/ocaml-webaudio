@@ -16,6 +16,16 @@ type test =
   | TestCase of string * test_fun
   | TestList of string * test list
 
+let assert_equal ?printer a b =
+  if a <> b
+  then begin
+    let msg = match printer with
+    | Some printer -> Printf.sprintf "not equal: %s %s" (printer a) (printer b)
+    | None -> Printf.sprintf "not equal"
+    in
+    raise (TestFailure msg)
+  end
+
 let run log test =
   let log_with_prefix prefix msg =
     log (Printf.sprintf "%s%s" prefix msg)
