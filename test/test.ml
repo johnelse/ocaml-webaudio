@@ -1,7 +1,8 @@
 module Html = Dom_html
+module T = Test_utils
 
-let (>::) = Test_utils.(>::)
-let (>:::) = Test_utils.(>:::)
+let (>::) = T.(>::)
+let (>:::) = T.(>:::)
 
 let finally f cleanup =
   let result =
@@ -26,7 +27,7 @@ let suite =
   ]
 
 let run_suite log =
-  let open Test_utils in
+  let open T in
   let (_ : result list) = run log suite in
   Js._false
 
