@@ -45,5 +45,5 @@ let suite =
 let run_suite log =
   let open T in
   let (_ : result list) = run log suite in
-  Js._false
+  ()
 

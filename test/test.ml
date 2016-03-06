@@ -19,7 +19,8 @@ let start _ =
       List.iter
         (fun node -> Dom.removeChild info node)
         (info##childNodes |> Dom.list_of_nodeList);
-      with_button_disabled button (fun () -> Test_suite.run_suite log));
+      with_button_disabled button (fun () -> Test_suite.run_suite log);
+      Js._false);
   Js._false
 
 let () =
