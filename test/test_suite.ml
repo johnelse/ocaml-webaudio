@@ -26,6 +26,14 @@ let test_make_oscillator () =
   with_context
     (fun context ->
       let oscillator = context##createOscillator () in
+
+      T.assert_equal (oscillator##numberOfInputs) 0;
+      T.assert_equal (oscillator##numberOfOutputs) 1;
+      T.assert_equal (oscillator##channelCountMode) (Js.string "max");
+      T.assert_equal (oscillator##channelCount) 2;
+      T.assert_equal
+        (oscillator##channelInterpretation) (Js.string "speakers");
+
       oscillator##frequency##value <- 200.0;
       T.assert_equal (oscillator##frequency##value) 200.0;
       oscillator##_type <- (Js.string "sine");
