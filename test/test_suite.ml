@@ -10,6 +10,18 @@ let with_context f =
 let test_make_context () =
   with_context (fun _ -> ())
 
+let test_destination () =
+  with_context
+    (fun context ->
+      let destination = context##destination in
+      T.assert_equal (destination##numberOfInputs) 1;
+      T.assert_equal (destination##numberOfOutputs) 0;
+
+      T.assert_equal (destination##channelCountMode) (Js.string "explicit");
+      T.assert_equal (destination##channelCount) 2;
+      T.assert_equal
+        (destination##channelInterpretation) (Js.string "speakers"))
+
 let test_make_oscillator () =
   with_context
     (fun context ->
@@ -26,6 +38,7 @@ let test_make_oscillator () =
 let suite =
   "base_suite" >::: [
     "test_make_context" >:: test_make_context;
+    "test_destination" >:: test_destination;
     "test_make_oscillator" >:: test_make_oscillator;
   ]
 
