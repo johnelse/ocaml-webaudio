@@ -28,6 +28,7 @@ end
 
 and audioDestinationNode = object
   inherit audioNode
+  method maxChannelCount : int Js.readonly_prop
 end
 
 and oscillatorNode = object

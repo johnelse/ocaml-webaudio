@@ -45,7 +45,7 @@ let test_make_oscillator () =
       assert_equal (oscillator##frequency##value) 200.0;
       oscillator##_type <- (Js.string "sine");
       assert_equal (oscillator##_type) (Js.string "sine");
-      oscillator##connect_AudioNode (context##destination);
+      oscillator##connect_AudioNode (Js.Unsafe.coerce (context##destination));
       oscillator##start ();
       oscillator##stop ()
     )
