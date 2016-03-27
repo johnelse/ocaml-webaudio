@@ -27,7 +27,9 @@ let test_destination () =
       assert_equal (destination##channelCountMode) (Js.string "explicit");
       assert_equal (destination##channelCount) 2;
       assert_equal
-        (destination##channelInterpretation) (Js.string "speakers"))
+        (destination##channelInterpretation) (Js.string "speakers");
+      assert_equal
+        (destination##maxChannelCount) 2)
 
 let test_make_oscillator () =
   with_context
