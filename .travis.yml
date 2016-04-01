@@ -1,5 +1,11 @@
 sudo: required
 language: c
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y xvfb
+  - sudo apt-get install -y portaudio19-dev
+  - sudo apt-get install -y libasound2-dev alsa-utils alsa-oss
+  - sudo bash test/prep-dummy-soundcard.sh
 install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-opam.sh
 script:
