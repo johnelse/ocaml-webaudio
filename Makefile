@@ -1,7 +1,7 @@
-all: build test/test.js
+all: build
 
-test/test.js: build
-	js_of_ocaml test.byte -o $@
+test/test_runner.js: build
+	js_of_ocaml test_runner.byte -o $@
 
 NAME=webaudio
 SETUP=ocaml setup.ml
@@ -12,7 +12,7 @@ build: setup.data
 doc: setup.data build
 	$(SETUP) -doc $(DOCFLAGS)
 
-test: setup.data build
+test: setup.data build test/test_runner.js
 	$(SETUP) -test $(TESTFLAGS)
 
 install: setup.data
@@ -27,7 +27,7 @@ reinstall: setup.data
 
 clean:
 	$(SETUP) -clean $(CLEANFLAGS)
-	rm -f test/test.js
+	rm -f test/test_runner.js
 
 distclean:
 	$(SETUP) -distclean $(DISTCLEANFLAGS)

@@ -6,4 +6,4 @@ setup.log
 *.byte
 *.swp
 
-test/test.js
+test/test_runner.js
