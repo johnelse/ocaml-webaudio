@@ -10,6 +10,9 @@ let finally f cleanup =
   cleanup ();
   result
 
+let test_is_supported () =
+  assert_equal (WebAudio.is_supported()) true
+
 let with_context f =
   let context = jsnew WebAudio.audioContext () in
   finally (fun () -> f context) (fun () -> context##close ())
@@ -54,6 +57,7 @@ let test_make_oscillator () =
 
 let suite =
   "base_suite" >::: [
+    "test_is_supported" >:: test_is_supported;
     "test_make_context" >:: test_make_context;
     "test_destination" >:: test_destination;
     "test_make_oscillator" >:: test_make_oscillator;
