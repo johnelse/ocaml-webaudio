@@ -20,6 +20,12 @@ let with_context f =
 let test_make_context () =
   with_context (fun _ -> ())
 
+let test_suspend_resume () =
+  with_context
+    (fun context ->
+      context##suspend ();
+      context##resume ())
+
 let test_destination () =
   with_context
     (fun context ->
@@ -59,6 +65,7 @@ let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
     "test_make_context" >:: test_make_context;
+    "test_suspend_resume" >:: test_suspend_resume;
     "test_destination" >:: test_destination;
     "test_make_oscillator" >:: test_make_oscillator;
   ]

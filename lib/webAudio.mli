@@ -49,6 +49,9 @@ and audioContext = object
   method state : Js.js_string Js.t Js.readonly_prop
 
   method close : unit Js.meth
+  method resume : unit Js.meth
+  method suspend : unit Js.meth
+
   method createOscillator : oscillatorNode Js.t Js.meth
 end
 
