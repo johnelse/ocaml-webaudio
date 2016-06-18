@@ -8,6 +8,9 @@ available: [ ocaml-version >= "4.02.1" ]
 build: [
   [make]
 ]
+build-test: [
+  [make "test"]
+]
 install: [
   [make "PREFIX=%{prefix}%" "install"]
 ]
