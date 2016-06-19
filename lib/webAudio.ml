@@ -7,8 +7,7 @@ class type audioNode = object
   method channelCountMode : Js.js_string Js.t Js.prop
   method channelInterpretation : Js.js_string Js.t Js.prop
 
-  method connect_AudioNode : audioNode Js.t -> unit Js.meth
-  method connect_AudioParam : audioParam Js.t -> unit Js.meth
+  method connect : audioNode Js.t -> unit Js.meth
   method disconnect : unit Js.meth
 end
 
