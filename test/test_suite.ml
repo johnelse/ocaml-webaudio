@@ -1,21 +1,14 @@
 open Webtest
 
-let finally f cleanup =
-  let result =
-    try f ()
-    with e ->
-      cleanup ();
-      raise e
-  in
-  cleanup ();
-  result
-
 let test_is_supported () =
   assert_equal (WebAudio.is_supported()) true
 
 let with_context f =
-  let context = jsnew WebAudio.audioContext () in
-  finally (fun () -> f context) (fun () -> context##close ())
+  bracket
+    (fun () -> jsnew WebAudio.audioContext ())
+    f
+    (fun context -> context##close ())
+    ()
 
 let test_make_context () =
   with_context (fun _ -> ())
