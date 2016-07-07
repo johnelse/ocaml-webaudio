@@ -30,7 +30,7 @@ and audioDestinationNode = object
   method maxChannelCount : int Js.readonly_prop
 end
 
-and oscillatorNode = object
+and oscillatorNode = object ('self)
   inherit audioNode
 
   method detune : audioParam Js.t Js.prop
@@ -39,6 +39,9 @@ and oscillatorNode = object
 
   method start : unit Js.meth
   method stop : unit Js.meth
+
+  method onended :
+    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
 end
 
 and audioContext = object
