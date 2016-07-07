@@ -6,6 +6,8 @@ test/test_runner.js: build
 NAME=webaudio
 SETUP=ocaml setup.ml
 
+CONFIGUREFLAGS=--enable-tests
+
 build: setup.data
 	$(SETUP) -build $(BUILDFLAGS)
 
