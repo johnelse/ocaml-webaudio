@@ -10,5 +10,4 @@ env:
     - TESTS=false
     - EXTRA_REMOTES=git://github.com/johnelse/opam-repo-johnelse
   matrix:
-    - OCAML_VERSION=4.01
     - OCAML_VERSION=4.02
