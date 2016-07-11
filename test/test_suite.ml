@@ -5,9 +5,9 @@ let test_is_supported () =
 
 let with_context f =
   bracket
-    (fun () -> jsnew WebAudio.audioContext ())
+    (fun () -> new%js WebAudio.audioContext)
     f
-    (fun context -> context##close ())
+    (fun context -> context##close)
     ()
 
 let test_make_context () =
@@ -16,42 +16,42 @@ let test_make_context () =
 let test_suspend_resume () =
   with_context
     (fun context ->
-      context##suspend ();
-      context##resume ())
+      context##suspend;
+      context##resume)
 
 let test_destination () =
   with_context
     (fun context ->
-      let destination = context##destination in
-      assert_equal (destination##numberOfInputs) 1;
-      assert_equal (destination##numberOfOutputs) 0;
+      let destination = context##.destination in
+      assert_equal (destination##.numberOfInputs) 1;
+      assert_equal (destination##.numberOfOutputs) 0;
 
-      assert_equal (destination##channelCountMode) (Js.string "explicit");
-      assert_equal (destination##channelCount) 2;
+      assert_equal (destination##.channelCountMode) (Js.string "explicit");
+      assert_equal (destination##.channelCount) 2;
       assert_equal
-        (destination##channelInterpretation) (Js.string "speakers");
+        (destination##.channelInterpretation) (Js.string "speakers");
       assert_equal
-        (destination##maxChannelCount) 2)
+        (destination##.maxChannelCount) 2)
 
 let test_make_oscillator () =
   with_context
     (fun context ->
-      let oscillator = context##createOscillator () in
+      let oscillator = context##createOscillator in
 
-      assert_equal (oscillator##numberOfInputs) 0;
-      assert_equal (oscillator##numberOfOutputs) 1;
-      assert_equal (oscillator##channelCountMode) (Js.string "max");
-      assert_equal (oscillator##channelCount) 2;
+      assert_equal (oscillator##.numberOfInputs) 0;
+      assert_equal (oscillator##.numberOfOutputs) 1;
+      assert_equal (oscillator##.channelCountMode) (Js.string "max");
+      assert_equal (oscillator##.channelCount) 2;
       assert_equal
-        (oscillator##channelInterpretation) (Js.string "speakers");
+        (oscillator##.channelInterpretation) (Js.string "speakers");
 
-      oscillator##frequency##value <- 200.0;
-      assert_equal (oscillator##frequency##value) 200.0;
-      oscillator##_type <- (Js.string "sine");
-      assert_equal (oscillator##_type) (Js.string "sine");
-      oscillator##connect ((context##destination :> WebAudio.audioNode Js.t));
-      oscillator##start ();
-      oscillator##stop ()
+      oscillator##.frequency##.value := 200.0;
+      assert_equal (oscillator##.frequency##.value) 200.0;
+      oscillator##._type := (Js.string "sine");
+      assert_equal (oscillator##._type) (Js.string "sine");
+      oscillator##(connect ((context##.destination :> WebAudio.audioNode Js.t)));
+      oscillator##start;
+      oscillator##stop
     )
 
 let suite =

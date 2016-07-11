@@ -56,7 +56,7 @@ end
 
 let audioContext =
   Js.Optdef.get
-    (Js.Unsafe.global##_AudioContext)
-    (fun () -> Js.Unsafe.global##webkitAudioContext)
+    (Js.Unsafe.global##._AudioContext)
+    (fun () -> Js.Unsafe.global##.webkitAudioContext)
 
 let is_supported () = Js.Optdef.test audioContext

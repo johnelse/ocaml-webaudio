@@ -11,7 +11,7 @@ BuildTools:  ocamlbuild
 Library webaudio
   Path:               lib
   Modules:            WebAudio
-  BuildDepends:       js_of_ocaml, js_of_ocaml.syntax
+  BuildDepends:       js_of_ocaml, js_of_ocaml.ppx
 
 Executable test_runner
   Build$:             flag(tests)
