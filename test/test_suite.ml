@@ -1,4 +1,4 @@
-open Webtest
+open Webtest.Suite
 
 let test_is_supported () =
   assert_equal (WebAudio.is_supported()) true
