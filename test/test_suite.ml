@@ -4,7 +4,7 @@ let test_is_supported () =
   assert_equal (WebAudio.is_supported()) true
 
 let with_context f =
-  bracket
+  Sync.bracket
     (fun () -> new%js WebAudio.audioContext)
     f
     (fun context -> context##close)
