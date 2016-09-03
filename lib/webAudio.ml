@@ -30,6 +30,17 @@ and audioDestinationNode = object
   method maxChannelCount : int Js.readonly_prop
 end
 
+and biquadFilterNode = object
+  inherit audioNode
+
+  method detune : audioParam Js.t Js.prop
+  method frequency : audioParam Js.t Js.prop
+  method _Q : audioParam Js.t Js.prop
+  method _type : Js.js_string Js.t Js.prop
+
+  method gain : audioParam Js.t Js.readonly_prop
+end
+
 and oscillatorNode = object ('self)
   inherit audioNode
 
@@ -54,6 +65,7 @@ and audioContext = object
   method resume : unit Js.meth
   method suspend : unit Js.meth
 
+  method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
 end
 

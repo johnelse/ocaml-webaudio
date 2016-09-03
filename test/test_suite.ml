@@ -93,6 +93,59 @@ let test_oscillator_onended =
 
       oscillator##stop)
 
+let test_create_biquadFilter () =
+  with_context_sync
+    (fun context ->
+      let biquadFilter = context##createBiquadFilter in
+
+      assert_equal (biquadFilter##.numberOfInputs) 1;
+      assert_equal (biquadFilter##.numberOfOutputs) 1;
+      assert_equal (biquadFilter##.channelCountMode) (Js.string "max");
+      assert_equal (biquadFilter##.channelCount) 2;
+      assert_equal
+        (biquadFilter##.channelInterpretation) (Js.string "speakers");
+
+      biquadFilter##.detune##.value := 100.0;
+      assert_equal (biquadFilter##.detune##.value) 100.0;
+      biquadFilter##.frequency##.value := 200.0;
+      assert_equal (biquadFilter##.frequency##.value) 200.0;
+      biquadFilter##._type := (Js.string "lowpass");
+      assert_equal (biquadFilter ##._type) (Js.string "lowpass");
+      biquadFilter##._Q##.value := 2.0;
+      assert_equal (biquadFilter##._Q##.value) 2.0;
+      assert_equal (biquadFilter##.gain##.value) 0.0;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect ((biquadFilter :> WebAudio.audioNode Js.t));
+      biquadFilter##connect ((context##.destination :> WebAudio.audioNode Js.t));
+      oscillator##start;
+      oscillator##stop)
+
+let test_set_biquadFilter_type () =
+  with_context_sync
+    (fun context ->
+      let biquadFilter = context##createBiquadFilter in
+
+      let allowed_types = [
+        "lowpass";
+        "highpass";
+        "bandpass";
+        "lowshelf";
+        "highshelf";
+        "peaking";
+        "notch";
+        "allpass";
+      ] in
+
+      List.iter
+        (fun allowed_type ->
+          biquadFilter##._type := (Js.string allowed_type);
+          assert_equal (biquadFilter##._type) (Js.string allowed_type))
+        allowed_types)
+
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
@@ -102,4 +155,6 @@ let suite =
     "test_create_oscillator" >:: test_create_oscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
+    "test_create_biquadFilter" >:: test_create_biquadFilter;
+    "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
   ]
