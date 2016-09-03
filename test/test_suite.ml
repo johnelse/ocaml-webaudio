@@ -51,6 +51,8 @@ let test_make_oscillator () =
       assert_equal
         (oscillator##.channelInterpretation) (Js.string "speakers");
 
+      oscillator##.detune##.value := 100.0;
+      assert_equal (oscillator##.detune##.value) 100.0;
       oscillator##.frequency##.value := 200.0;
       assert_equal (oscillator##.frequency##.value) 200.0;
       oscillator##._type := (Js.string "sine");
