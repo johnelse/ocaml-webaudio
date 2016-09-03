@@ -18,7 +18,7 @@ Executable test_runner
   CompiledObject:     byte
   Path:               test
   MainIs:             test_runner.ml
-  BuildDepends:       webaudio, webtest.runner
+  BuildDepends:       webaudio, webtest.js
   Install:            false
 
 Test test
