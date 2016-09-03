@@ -16,7 +16,7 @@ let with_context_async f =
     f
     (fun context -> context##close)
 
-let test_make_context () =
+let test_create_context () =
   with_context_sync (fun _ -> ())
 
 let test_suspend_resume () =
@@ -39,7 +39,7 @@ let test_destination () =
       assert_equal
         (destination##.maxChannelCount) 2)
 
-let test_make_oscillator () =
+let test_create_oscillator () =
   with_context_sync
     (fun context ->
       let oscillator = context##createOscillator in
@@ -96,10 +96,10 @@ let test_oscillator_onended =
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
-    "test_make_context" >:: test_make_context;
+    "test_create_context" >:: test_create_context;
     "test_suspend_resume" >:: test_suspend_resume;
     "test_destination" >:: test_destination;
-    "test_make_oscillator" >:: test_make_oscillator;
+    "test_create_oscillator" >:: test_create_oscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
   ]
