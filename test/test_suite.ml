@@ -60,6 +60,24 @@ let test_make_oscillator () =
       oscillator##stop
     )
 
+let test_set_oscillator_type () =
+  with_context_sync
+    (fun context ->
+      let oscillator = context##createOscillator in
+
+      let allowed_types = [
+        "sine";
+        "square";
+        "sawtooth";
+        "triangle";
+      ] in
+
+      List.iter
+        (fun allowed_type ->
+          oscillator##._type := (Js.string allowed_type);
+          assert_equal (oscillator##._type) (Js.string allowed_type))
+        allowed_types)
+
 let test_oscillator_onended =
   with_context_async
     (fun context callback ->
@@ -80,5 +98,6 @@ let suite =
     "test_suspend_resume" >:: test_suspend_resume;
     "test_destination" >:: test_destination;
     "test_make_oscillator" >:: test_make_oscillator;
+    "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
   ]
