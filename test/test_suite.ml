@@ -57,7 +57,7 @@ let test_create_oscillator () =
       assert_equal (oscillator##.frequency##.value) 200.0;
       oscillator##._type := (Js.string "sine");
       assert_equal (oscillator##._type) (Js.string "sine");
-      oscillator##(connect ((context##.destination :> WebAudio.audioNode Js.t)));
+      oscillator##connect (context##.destination :> WebAudio.audioNode Js.t);
       oscillator##start;
       oscillator##stop
     )
@@ -85,7 +85,7 @@ let test_oscillator_onended =
     (fun context callback ->
       let oscillator = context##createOscillator in
 
-      oscillator##connect ((context##.destination :> WebAudio.audioNode Js.t));
+      oscillator##connect (context##.destination :> WebAudio.audioNode Js.t);
       oscillator##start;
 
       oscillator##.onended :=
@@ -119,8 +119,8 @@ let test_create_biquadFilter () =
       oscillator##._type := (Js.string "square");
       oscillator##.frequency##.value := 200.0;
 
-      oscillator##connect ((biquadFilter :> WebAudio.audioNode Js.t));
-      biquadFilter##connect ((context##.destination :> WebAudio.audioNode Js.t));
+      oscillator##connect (biquadFilter :> WebAudio.audioNode Js.t);
+      biquadFilter##connect (context##.destination :> WebAudio.audioNode Js.t);
       oscillator##start;
       oscillator##stop)
 
