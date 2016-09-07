@@ -61,6 +61,12 @@ and oscillatorNode = object ('self)
     ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
 end
 
+and stereoPannerNode = object
+  inherit audioNode
+
+  method pan : audioParam Js.t Js.readonly_prop
+end
+
 and audioContext = object
   method currentTime : float Js.readonly_prop
   method destination : audioDestinationNode Js.t Js.readonly_prop
@@ -74,6 +80,7 @@ and audioContext = object
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
+  method createStereoPanner : stereoPannerNode Js.t Js.meth
 end
 
 let audioContext =

@@ -171,6 +171,32 @@ let test_create_gain () =
       oscillator##start;
       oscillator##stop)
 
+let test_create_stereo_panner () =
+  with_context_sync
+    (fun context ->
+      let stereoPanner = context##createStereoPanner in
+
+      assert_equal (stereoPanner##.numberOfInputs) 1;
+      assert_equal (stereoPanner##.numberOfOutputs) 1;
+      assert_equal (stereoPanner##.channelCountMode) (Js.string "clamped-max");
+      assert_equal (stereoPanner##.channelCount) 2;
+      assert_equal
+        (stereoPanner##.channelInterpretation) (Js.string "speakers");
+
+      stereoPanner##.pan##.value := (-0.5);
+      assert_equal ~printer:string_of_float (stereoPanner##.pan##.value) (-0.5);
+      stereoPanner##.pan##.value := 0.5;
+      assert_equal ~printer:string_of_float (stereoPanner##.pan##.value) 0.5;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "sine");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (stereoPanner :> WebAudio.audioNode Js.t);
+      stereoPanner##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
@@ -183,4 +209,5 @@ let suite =
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
     "test_create_gain" >:: test_create_gain;
+    "test_create_stereo_panner" >:: test_create_stereo_panner;
   ]
