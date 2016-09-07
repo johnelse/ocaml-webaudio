@@ -41,6 +41,12 @@ and biquadFilterNode = object
   method gain : audioParam Js.t Js.readonly_prop
 end
 
+and gainNode = object
+  inherit audioNode
+
+  method gain : audioParam Js.t Js.readonly_prop
+end
+
 and oscillatorNode = object ('self)
   inherit audioNode
 
@@ -66,6 +72,7 @@ and audioContext = object
   method suspend : unit Js.meth
 
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
+  method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
 end
 

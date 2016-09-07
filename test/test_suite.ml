@@ -147,6 +147,30 @@ let test_set_biquadFilter_type () =
           assert_equal (biquadFilter##._type) (Js.string allowed_type))
         allowed_types)
 
+let test_create_gain () =
+  with_context_sync
+    (fun context ->
+      let gain = context##createGain in
+
+      assert_equal (gain##.numberOfInputs) 1;
+      assert_equal (gain##.numberOfOutputs) 1;
+      assert_equal (gain##.channelCountMode) (Js.string "max");
+      assert_equal (gain##.channelCount) 2;
+      assert_equal
+        (gain##.channelInterpretation) (Js.string "speakers");
+
+      gain##.gain##.value := 2.0;
+      assert_equal (gain##.gain##.value) 2.0;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (gain :> WebAudio.audioNode Js.t);
+      gain##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
@@ -158,4 +182,5 @@ let suite =
     "test_oscillator_onended" >:~ test_oscillator_onended;
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
+    "test_create_gain" >:: test_create_gain;
   ]
