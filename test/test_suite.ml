@@ -113,7 +113,8 @@ let test_create_biquadFilter () =
       assert_equal (biquadFilter ##._type) (Js.string "lowpass");
       biquadFilter##._Q##.value := 2.0;
       assert_equal (biquadFilter##._Q##.value) 2.0;
-      assert_equal (biquadFilter##.gain##.value) 0.0;
+      biquadFilter##.gain##.value := 2.0;
+      assert_equal (biquadFilter##.gain##.value) 2.0;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "square");
