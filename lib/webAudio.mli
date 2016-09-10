@@ -1,3 +1,14 @@
+class type audioBuffer = object
+  method sampleRate : float Js.readonly_prop
+  method length : int Js.readonly_prop
+  method duration : float Js.readonly_prop
+  method numberOfChannels : int Js.readonly_prop
+
+  method getChannelData : int -> Typed_array.float32Array Js.t Js.meth
+  method copyFromChannel : Typed_array.float32Array Js.t -> int -> int -> unit Js.meth
+  method copyToChannel : Typed_array.float32Array Js.t -> int -> int -> unit Js.meth
+end
+
 class type audioNode = object
   method context : audioContext Js.t Js.readonly_prop
   method numberOfInputs : int Js.readonly_prop
@@ -76,6 +87,8 @@ and audioContext = object
   method close : unit Js.meth
   method resume : unit Js.meth
   method suspend : unit Js.meth
+
+  method createBuffer : int -> int -> float -> audioBuffer Js.t Js.meth
 
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createGain : gainNode Js.t Js.meth

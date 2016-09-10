@@ -39,6 +39,66 @@ let test_destination () =
       assert_equal
         (destination##.maxChannelCount) 2)
 
+let buffer_length = 44100
+let sample_rate = 44100.0
+let pi = 2.0 *. (asin 1.0)
+
+let test_create_buffer () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+
+      assert_equal (buffer##.numberOfChannels) 1;
+      assert_equal (buffer##.length) buffer_length;
+      assert_equal (buffer##.sampleRate) sample_rate)
+
+let test_buffer_getChannelData () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+
+      let channel0Data = buffer##getChannelData 0 in
+      assert_equal (channel0Data##.length) buffer_length;
+      assert_raises_string
+        "SyntaxError: An invalid or illegal string was specified"
+        (fun () ->
+          let (_:Typed_array.float32Array Js.t) = buffer##getChannelData 1 in
+          ()))
+
+let test_buffer_copyFromChannel () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+      let dst = new%js Typed_array.float32Array buffer_length in
+      buffer##copyFromChannel dst 0 0)
+
+let test_buffer_copyToChannel () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+      let src = new%js Typed_array.float32Array buffer_length in
+      buffer##copyToChannel src 0 0)
+
+let test_buffer_copy_both_ways () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+      let src = new%js Typed_array.float32Array buffer_length in
+      let dst = new%js Typed_array.float32Array buffer_length in
+      for i = 0 to buffer_length - 1 do
+        (* Fill buffer with a second of 440Hz sine wave. *)
+        let frequency = 440.0 in
+        let samples_per_period = sample_rate /. frequency in
+        let amplitude =
+          sin (2.0 *. pi *. (float_of_int i) /. samples_per_period) in
+        Typed_array.set src i amplitude
+      done;
+      buffer##copyToChannel src 0 0;
+      buffer##copyFromChannel dst 0 0;
+      for i = 0 to buffer_length - 1 do
+        assert_equal (Typed_array.get src i) (Typed_array.get dst i)
+      done)
+
 let test_create_oscillator () =
   with_context_sync
     (fun context ->
@@ -203,6 +263,11 @@ let suite =
     "test_create_context" >:: test_create_context;
     "test_suspend_resume" >:: test_suspend_resume;
     "test_destination" >:: test_destination;
+    "test_create_buffer" >:: test_create_buffer;
+    "test_buffer_getChannelData" >:: test_buffer_getChannelData;
+    "test_buffer_copyFromChannel" >:: test_buffer_copyFromChannel;
+    "test_buffer_copyToChannel" >:: test_buffer_copyToChannel;
+    "test_buffer_copy_both_ways" >:: test_buffer_copy_both_ways;
     "test_create_oscillator" >:: test_create_oscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
