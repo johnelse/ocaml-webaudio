@@ -19,6 +19,16 @@ let with_context_async f =
 let test_create_context () =
   with_context_sync (fun _ -> ())
 
+let test_context_fields () =
+  with_context_sync
+    (fun context ->
+      (* There's no guaranteeing what the value of these fields will be, but
+         let's make sure they can be read. *)
+      let (_:float) = context##.currentTime in
+      let (_:float) = context##.sampleRate in
+      let (_:Js.js_string Js.t) = context##.state in
+      ())
+
 let test_suspend_resume () =
   with_context_sync
     (fun context ->
@@ -261,6 +271,7 @@ let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
     "test_create_context" >:: test_create_context;
+    "test_context_fields" >:: test_context_fields;
     "test_suspend_resume" >:: test_suspend_resume;
     "test_destination" >:: test_destination;
     "test_create_buffer" >:: test_create_buffer;
