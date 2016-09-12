@@ -84,6 +84,9 @@ and audioContext = object
   method sampleRate : float Js.readonly_prop
   method state : Js.js_string Js.t Js.readonly_prop
 
+  method onstatechange :
+    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
+
   method close : unit Js.meth
   method resume : unit Js.meth
   method suspend : unit Js.meth

@@ -35,6 +35,12 @@ let test_suspend_resume () =
       context##suspend;
       context##resume)
 
+let test_context_onstatechange =
+  with_context_async
+    (fun context callback ->
+      context##.onstatechange :=
+        Dom_html.handler (fun _ -> callback (); Js._false))
+
 let test_destination () =
   with_context_sync
     (fun context ->
@@ -273,6 +279,7 @@ let suite =
     "test_create_context" >:: test_create_context;
     "test_context_fields" >:: test_context_fields;
     "test_suspend_resume" >:: test_suspend_resume;
+    "test_context_onstatechange" >:~ test_context_onstatechange;
     "test_destination" >:: test_destination;
     "test_create_buffer" >:: test_create_buffer;
     "test_buffer_getChannelData" >:: test_buffer_getChannelData;
