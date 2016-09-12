@@ -36,6 +36,23 @@ and audioParam = object
     Typed_array.float32Array Js.t -> float -> float -> unit Js.meth
 end
 
+and audioBufferSourceNode = object
+  inherit audioNode
+
+  method buffer : audioBuffer Js.t Js.prop
+  method detune : audioParam Js.t Js.readonly_prop
+  method loop : bool Js.t Js.prop
+  method loopStart : float Js.prop
+  method loopEnd : float Js.prop
+  method playbackRate : audioParam Js.t Js.readonly_prop
+
+  method onended :
+    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
+
+  method start : unit Js.meth
+  method stop : unit Js.meth
+end
+
 and audioDestinationNode = object
   inherit audioNode
   method maxChannelCount : int Js.readonly_prop
@@ -94,6 +111,7 @@ and audioContext = object
   method createBuffer : int -> int -> float -> audioBuffer Js.t Js.meth
 
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
+  method createBufferSource : audioBufferSourceNode Js.t Js.meth
   method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
   method createStereoPanner : stereoPannerNode Js.t Js.meth

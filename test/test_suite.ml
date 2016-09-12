@@ -95,25 +95,85 @@ let test_buffer_copyToChannel () =
       let src = new%js Typed_array.float32Array buffer_length in
       buffer##copyToChannel src 0 0)
 
+let fill_with_sine_wave array =
+  for i = 0 to array##.length - 1 do
+    (* Fill buffer with a second of 440Hz sine wave. *)
+    let frequency = 440.0 in
+    let samples_per_period = sample_rate /. frequency in
+    let amplitude =
+      sin (2.0 *. pi *. (float_of_int i) /. samples_per_period) in
+    Typed_array.set array i amplitude
+  done
+
 let test_buffer_copy_both_ways () =
   with_context_sync
     (fun context ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
       let src = new%js Typed_array.float32Array buffer_length in
       let dst = new%js Typed_array.float32Array buffer_length in
-      for i = 0 to buffer_length - 1 do
-        (* Fill buffer with a second of 440Hz sine wave. *)
-        let frequency = 440.0 in
-        let samples_per_period = sample_rate /. frequency in
-        let amplitude =
-          sin (2.0 *. pi *. (float_of_int i) /. samples_per_period) in
-        Typed_array.set src i amplitude
-      done;
+      fill_with_sine_wave src;
       buffer##copyToChannel src 0 0;
       buffer##copyFromChannel dst 0 0;
       for i = 0 to buffer_length - 1 do
         assert_equal (Typed_array.get src i) (Typed_array.get dst i)
       done)
+
+let test_create_buffer_source () =
+  with_context_sync
+    (fun context ->
+      let bufferSource = context##createBufferSource in
+
+      assert_equal (bufferSource##.numberOfInputs) 0;
+      assert_equal (bufferSource##.numberOfOutputs) 1;
+      assert_equal (bufferSource##.channelCountMode) (Js.string "max");
+      assert_equal
+        (bufferSource##.channelInterpretation) (Js.string "speakers");
+
+      bufferSource##.detune##.value := 100.0;
+      assert_equal (bufferSource##.detune##.value) 100.0;
+      bufferSource##.loop := Js._true;
+      assert_equal (bufferSource##.loop) Js._true;
+      bufferSource##.loopStart := 0.1;
+      assert_equal (bufferSource##.loopStart) 0.1;
+      bufferSource##.loopEnd := 0.9;
+      assert_equal (bufferSource##.loopEnd) 0.9;
+      bufferSource##.playbackRate##.value := 0.5;
+      assert_equal (bufferSource##.playbackRate##.value) 0.5)
+
+let test_play_buffer_source () =
+  with_context_sync
+    (fun context ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+      let src = new%js Typed_array.float32Array buffer_length in
+      fill_with_sine_wave src;
+      buffer##copyToChannel src 0 0;
+
+      let bufferSource = context##createBufferSource in
+      bufferSource##.buffer := buffer;
+
+      bufferSource##connect (context##.destination :> WebAudio.audioNode Js.t);
+      bufferSource##start;
+      bufferSource##stop)
+
+let test_buffer_source_onended =
+  with_context_async
+    (fun context callback ->
+      let buffer = context##createBuffer 1 buffer_length sample_rate in
+      let src = new%js Typed_array.float32Array buffer_length in
+      fill_with_sine_wave src;
+      buffer##copyToChannel src 0 0;
+
+      let bufferSource = context##createBufferSource in
+      bufferSource##.buffer := buffer;
+
+      bufferSource##.loopStart := 0.0;
+      bufferSource##.loopEnd := 0.1;
+
+      bufferSource##.onended :=
+        Dom_html.handler (fun _ -> callback (); Js._false);
+
+      bufferSource##connect (context##.destination :> WebAudio.audioNode Js.t);
+      bufferSource##start)
 
 let test_create_oscillator () =
   with_context_sync
@@ -286,6 +346,9 @@ let suite =
     "test_buffer_copyFromChannel" >:: test_buffer_copyFromChannel;
     "test_buffer_copyToChannel" >:: test_buffer_copyToChannel;
     "test_buffer_copy_both_ways" >:: test_buffer_copy_both_ways;
+    "test_create_buffer_source" >:: test_create_buffer_source;
+    "test_play_buffer_source" >:: test_play_buffer_source;
+    "test_buffer_source_onended" >:~ test_buffer_source_onended;
     "test_create_oscillator" >:: test_create_oscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
