@@ -38,8 +38,18 @@ let test_suspend_resume () =
 let test_context_onstatechange =
   with_context_async
     (fun context callback ->
+      (* onstatechange will be raised twice - once when the context's state is
+         set to "running" and once when its state is set to "closed". Use a flag
+         to make sure the callback only gets called once. *)
+      let callback_called = ref false in
+
       context##.onstatechange :=
-        Dom_html.handler (fun _ -> callback (); Js._false))
+        Dom_html.handler (fun _ ->
+          if not !callback_called then begin
+            callback_called := true;
+            callback ()
+          end;
+          Js._false))
 
 let test_destination () =
   with_context_sync
