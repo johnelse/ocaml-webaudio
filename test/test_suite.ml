@@ -343,6 +343,25 @@ let test_create_stereo_panner () =
       oscillator##start;
       oscillator##stop)
 
+let test_create_periodic_wave () =
+  with_context_sync
+    (fun context ->
+      let real = new%js Typed_array.float32Array 2 in
+      let imag = new%js Typed_array.float32Array 2 in
+
+      Typed_array.set real 0 0.0;
+      Typed_array.set imag 0 0.0;
+      Typed_array.set real 1 1.0;
+      Typed_array.set imag 1 0.0;
+
+      let periodicWave = context##createPeriodicWave real imag in
+
+      let oscillator = context##createOscillator in
+      oscillator##setPeriodicWave periodicWave;
+
+      oscillator##start;
+      oscillator##stop)
+
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
@@ -366,4 +385,5 @@ let suite =
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
     "test_create_gain" >:: test_create_gain;
     "test_create_stereo_panner" >:: test_create_stereo_panner;
+    "test_create_periodic_wave" >:: test_create_periodic_wave;
   ]

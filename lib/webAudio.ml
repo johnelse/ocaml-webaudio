@@ -85,6 +85,8 @@ and oscillatorNode = object ('self)
   method start : unit Js.meth
   method stop : unit Js.meth
 
+  method setPeriodicWave : periodicWave Js.t -> unit Js.meth
+
   method onended :
     ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
 end
@@ -93,6 +95,9 @@ and stereoPannerNode = object
   inherit audioNode
 
   method pan : audioParam Js.t Js.readonly_prop
+end
+
+and periodicWave = object
 end
 
 and audioContext = object
@@ -115,6 +120,10 @@ and audioContext = object
   method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
   method createStereoPanner : stereoPannerNode Js.t Js.meth
+
+  method createPeriodicWave :
+    Typed_array.float32Array Js.t ->
+    Typed_array.float32Array Js.t -> periodicWave Js.t Js.meth
 end
 
 let audioContext =
