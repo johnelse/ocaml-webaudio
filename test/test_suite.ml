@@ -293,6 +293,40 @@ let test_set_biquadFilter_type () =
           assert_equal (biquadFilter##._type) (Js.string allowed_type))
         allowed_types)
 
+let test_create_compressor () =
+  with_context_sync
+    (fun context ->
+      let compressor = context##createDynamicsCompressor in
+
+      assert_equal (compressor##.numberOfInputs) 1;
+      assert_equal (compressor##.numberOfOutputs) 1;
+      assert_equal (compressor##.channelCountMode) (Js.string "explicit");
+      assert_equal (compressor##.channelCount) 2;
+      assert_equal
+        (compressor##.channelInterpretation) (Js.string "speakers");
+
+      let (_:float) = (compressor##.reduction) in
+
+      compressor##.attack##.value := 2.0;
+      assert_equal (compressor##.attack##.value) 2.0;
+      compressor##.knee##.value := 20.0;
+      assert_equal (compressor##.knee##.value) 20.0;
+      compressor##.ratio##.value := 2.0;
+      assert_equal (compressor##.ratio##.value) 2.0;
+      compressor##.release##.value := 2.0;
+      assert_equal (compressor##.release##.value) 2.0;
+      compressor##.threshold##.value := 40.0;
+      assert_equal (compressor##.threshold##.value) 40.0;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (compressor :> WebAudio.audioNode Js.t);
+      compressor##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let test_create_gain () =
   with_context_sync
     (fun context ->
@@ -383,6 +417,7 @@ let suite =
     "test_oscillator_onended" >:~ test_oscillator_onended;
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
+    "test_create_compressor" >:: test_create_compressor;
     "test_create_gain" >:: test_create_gain;
     "test_create_stereo_panner" >:: test_create_stereo_panner;
     "test_create_periodic_wave" >:: test_create_periodic_wave;

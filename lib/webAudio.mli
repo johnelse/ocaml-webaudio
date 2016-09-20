@@ -69,6 +69,18 @@ and biquadFilterNode = object
   method gain : audioParam Js.t Js.readonly_prop
 end
 
+and dynamicsCompressorNode = object
+  inherit audioNode
+
+  method reduction : float Js.readonly_prop
+
+  method attack : audioParam Js.t Js.readonly_prop
+  method knee : audioParam Js.t Js.readonly_prop
+  method ratio : audioParam Js.t Js.readonly_prop
+  method release : audioParam Js.t Js.readonly_prop
+  method threshold : audioParam Js.t Js.readonly_prop
+end
+
 and gainNode = object
   inherit audioNode
 
@@ -117,6 +129,7 @@ and audioContext = object
 
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createBufferSource : audioBufferSourceNode Js.t Js.meth
+  method createDynamicsCompressor : dynamicsCompressorNode Js.t Js.meth
   method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
   method createStereoPanner : stereoPannerNode Js.t Js.meth
