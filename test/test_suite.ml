@@ -416,6 +416,7 @@ let test_create_periodic_wave () =
 
       let oscillator = context##createOscillator in
       oscillator##setPeriodicWave periodicWave;
+      oscillator##connect (context##.destination :> WebAudio.audioNode Js.t);
 
       oscillator##start;
       oscillator##stop)
