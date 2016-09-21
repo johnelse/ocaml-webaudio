@@ -2,6 +2,7 @@ sudo: required
 language: c
 before_install:
   - sudo apt-get -qq update
+  - sudo usermod -a -G audio travis
   - sudo apt-get install -y xvfb
   - sudo apt-get install -y portaudio19-dev
   - sudo apt-get install -y libasound2-dev alsa-utils alsa-oss
@@ -9,7 +10,7 @@ before_install:
 install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-opam.sh
 script:
-  - bash -ex .travis-opam.sh
+  - sudo -E sudo -u $USER -E bash -ex .travis-opam.sh
 env:
   global:
     - PACKAGE=webaudio
