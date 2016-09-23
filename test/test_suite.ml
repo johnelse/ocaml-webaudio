@@ -296,6 +296,41 @@ let test_set_biquadFilter_type () =
           assert_equal (biquadFilter##._type) (Js.string allowed_type))
         allowed_types)
 
+let test_create_convolver () =
+  with_context_sync
+    (fun context ->
+      let convolver = context##createConvolver in
+
+      assert_equal (convolver##.numberOfInputs) 1;
+      assert_equal (convolver##.numberOfOutputs) 1;
+      assert_equal (convolver##.channelCountMode) (Js.string "clamped-max");
+      assert_equal (convolver##.channelCount) 2;
+      assert_equal
+        (convolver##.channelInterpretation) (Js.string "speakers");
+
+      convolver##.normalize := Js._true;
+      assert_equal (convolver##.normalize) Js._true;
+
+      let buffer_length = 100 in
+      let buffer = context##createBuffer 2 buffer_length sample_rate in
+      let data = new%js Typed_array.float32Array buffer_length in
+      for i = 0 to 99 do
+        Typed_array.set data i (1.0 *. (0.9 ** (float_of_int i)))
+      done;
+
+      buffer##copyToChannel data 0 0;
+      buffer##copyToChannel data 1 0;
+      convolver##.buffer := buffer;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (convolver :> WebAudio.audioNode Js.t);
+      convolver##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let test_create_delay () =
   with_context_sync
     (fun context ->
@@ -445,6 +480,7 @@ let suite =
     "test_oscillator_onended" >:~ test_oscillator_onended;
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
+    "test_create_convolver" >:: test_create_convolver;
     "test_create_delay" >:: test_create_delay;
     "test_create_compressor" >:: test_create_compressor;
     "test_create_gain" >:: test_create_gain;
