@@ -122,6 +122,13 @@ and stereoPannerNode = object
   method pan : audioParam Js.t Js.readonly_prop
 end
 
+and waveShaperNode = object
+  inherit audioNode
+
+  method curve : Typed_array.float32Array Js.t Js.prop
+  method oversample : Js.js_string Js.t Js.prop
+end
+
 and periodicWave = object
 end
 
@@ -148,6 +155,7 @@ and audioContext = object
   method createGain : gainNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
   method createStereoPanner : stereoPannerNode Js.t Js.meth
+  method createWaveShaper : waveShaperNode Js.t Js.meth
 
   method createPeriodicWave :
     Typed_array.float32Array Js.t ->

@@ -439,6 +439,53 @@ let test_create_stereo_panner () =
       oscillator##start;
       oscillator##stop)
 
+let make_distortion_curve amount =
+  let abs_float x =
+    if x >= 0. then x
+    else 0.0 -. x
+  in
+  (* See https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode *)
+  let amount = max 0.0 amount in
+  let samples = int_of_float sample_rate in
+  let curve = new%js Typed_array.float32Array samples in
+  let deg = pi /. 180.0 in
+  for i = 0 to (samples - 1) do
+    let x = (float_of_int i) *. 2.0 /. sample_rate -. 1.0 in
+    Typed_array.set curve i
+      ((3.0 +. amount) *. x *. 20. *. deg /. (pi +. amount *. (abs_float x)))
+  done;
+  curve
+
+let test_create_waveShaper () =
+  with_context_sync
+    (fun context ->
+      let waveShaper = context##createWaveShaper in
+
+      assert_equal (waveShaper##.numberOfInputs) 1;
+      assert_equal (waveShaper##.numberOfOutputs) 1;
+      assert_equal (waveShaper##.channelCountMode) (Js.string "max");
+      assert_equal (waveShaper##.channelCount) 2;
+      assert_equal
+        (waveShaper##.channelInterpretation) (Js.string "speakers");
+
+      waveShaper##.oversample := (Js.string "none");
+      assert_equal (waveShaper##.oversample) (Js.string "none");
+      waveShaper##.oversample := (Js.string "2x");
+      assert_equal (waveShaper##.oversample) (Js.string "2x");
+      waveShaper##.oversample := (Js.string "4x");
+      assert_equal (waveShaper##.oversample) (Js.string "4x");
+
+      waveShaper##.curve := (make_distortion_curve 10.0);
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "sine");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (waveShaper :> WebAudio.audioNode Js.t);
+      waveShaper##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let test_create_periodic_wave () =
   with_context_sync
     (fun context ->
@@ -485,5 +532,6 @@ let suite =
     "test_create_compressor" >:: test_create_compressor;
     "test_create_gain" >:: test_create_gain;
     "test_create_stereo_panner" >:: test_create_stereo_panner;
+    "test_create_waveShaper" >:: test_create_waveShaper;
     "test_create_periodic_wave" >:: test_create_periodic_wave;
   ]
