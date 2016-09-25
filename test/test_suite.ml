@@ -55,18 +55,18 @@ let test_destination () =
   with_context_sync
     (fun context ->
       let destination = context##.destination in
-      assert_equal (destination##.numberOfInputs) 1;
-      assert_equal (destination##.numberOfOutputs) 0;
+      assert_equal destination##.numberOfInputs 1;
+      assert_equal destination##.numberOfOutputs 0;
 
-      assert_equal (destination##.channelCountMode) (Js.string "explicit");
-      assert_equal (destination##.channelCount) 2;
+      assert_equal destination##.channelCountMode (Js.string "explicit");
+      assert_equal destination##.channelCount 2;
       assert_equal
         (destination##.channelInterpretation) (Js.string "speakers");
       (* TODO: Figure out why snd-dummy causes Firefox to report
                maxChannelCount as 10000! *)
       assert_true
         "maxChannelCount should be an expected number"
-        (List.mem (destination##.maxChannelCount) [2; 10000]))
+        (List.mem destination##.maxChannelCount [2; 10000]))
 
 let buffer_length = 44100
 let sample_rate = 44100.0
@@ -77,9 +77,9 @@ let test_create_buffer () =
     (fun context ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
 
-      assert_equal (buffer##.numberOfChannels) 1;
-      assert_equal (buffer##.length) buffer_length;
-      assert_equal (buffer##.sampleRate) sample_rate)
+      assert_equal buffer##.numberOfChannels 1;
+      assert_equal buffer##.length buffer_length;
+      assert_equal buffer##.sampleRate sample_rate)
 
 let test_buffer_getChannelData () =
   with_context_sync
@@ -87,7 +87,7 @@ let test_buffer_getChannelData () =
       let buffer = context##createBuffer 1 buffer_length sample_rate in
 
       let channel0Data = buffer##getChannelData 0 in
-      assert_equal (channel0Data##.length) buffer_length;
+      assert_equal channel0Data##.length buffer_length;
       assert_raises_string
         "SyntaxError: An invalid or illegal string was specified"
         (fun () ->
@@ -136,22 +136,21 @@ let test_create_buffer_source () =
     (fun context ->
       let bufferSource = context##createBufferSource in
 
-      assert_equal (bufferSource##.numberOfInputs) 0;
-      assert_equal (bufferSource##.numberOfOutputs) 1;
-      assert_equal (bufferSource##.channelCountMode) (Js.string "max");
-      assert_equal
-        (bufferSource##.channelInterpretation) (Js.string "speakers");
+      assert_equal bufferSource##.numberOfInputs 0;
+      assert_equal bufferSource##.numberOfOutputs 1;
+      assert_equal bufferSource##.channelCountMode (Js.string "max");
+      assert_equal bufferSource##.channelInterpretation (Js.string "speakers");
 
       bufferSource##.detune##.value := 100.0;
-      assert_equal (bufferSource##.detune##.value) 100.0;
+      assert_equal bufferSource##.detune##.value 100.0;
       bufferSource##.loop := Js._true;
-      assert_equal (bufferSource##.loop) Js._true;
+      assert_equal bufferSource##.loop Js._true;
       bufferSource##.loopStart := 0.1;
-      assert_equal (bufferSource##.loopStart) 0.1;
+      assert_equal bufferSource##.loopStart 0.1;
       bufferSource##.loopEnd := 0.9;
-      assert_equal (bufferSource##.loopEnd) 0.9;
+      assert_equal bufferSource##.loopEnd 0.9;
       bufferSource##.playbackRate##.value := 0.5;
-      assert_equal (bufferSource##.playbackRate##.value) 0.5)
+      assert_equal bufferSource##.playbackRate##.value 0.5)
 
 let test_play_buffer_source () =
   with_context_sync
@@ -193,19 +192,18 @@ let test_create_oscillator () =
     (fun context ->
       let oscillator = context##createOscillator in
 
-      assert_equal (oscillator##.numberOfInputs) 0;
-      assert_equal (oscillator##.numberOfOutputs) 1;
-      assert_equal (oscillator##.channelCountMode) (Js.string "max");
-      assert_equal (oscillator##.channelCount) 2;
-      assert_equal
-        (oscillator##.channelInterpretation) (Js.string "speakers");
+      assert_equal oscillator##.numberOfInputs 0;
+      assert_equal oscillator##.numberOfOutputs 1;
+      assert_equal oscillator##.channelCountMode (Js.string "max");
+      assert_equal oscillator##.channelCount 2;
+      assert_equal oscillator##.channelInterpretation (Js.string "speakers");
 
       oscillator##.detune##.value := 100.0;
-      assert_equal (oscillator##.detune##.value) 100.0;
+      assert_equal oscillator##.detune##.value 100.0;
       oscillator##.frequency##.value := 200.0;
-      assert_equal (oscillator##.frequency##.value) 200.0;
+      assert_equal oscillator##.frequency##.value 200.0;
       oscillator##._type := (Js.string "sine");
-      assert_equal (oscillator##._type) (Js.string "sine");
+      assert_equal oscillator##._type (Js.string "sine");
       oscillator##connect (context##.destination :> WebAudio.audioNode Js.t);
       oscillator##start;
       oscillator##stop
@@ -226,7 +224,7 @@ let test_set_oscillator_type () =
       List.iter
         (fun allowed_type ->
           oscillator##._type := (Js.string allowed_type);
-          assert_equal (oscillator##._type) (Js.string allowed_type))
+          assert_equal oscillator##._type (Js.string allowed_type))
         allowed_types)
 
 let test_oscillator_onended =
@@ -247,23 +245,22 @@ let test_create_biquadFilter () =
     (fun context ->
       let biquadFilter = context##createBiquadFilter in
 
-      assert_equal (biquadFilter##.numberOfInputs) 1;
-      assert_equal (biquadFilter##.numberOfOutputs) 1;
-      assert_equal (biquadFilter##.channelCountMode) (Js.string "max");
-      assert_equal (biquadFilter##.channelCount) 2;
-      assert_equal
-        (biquadFilter##.channelInterpretation) (Js.string "speakers");
+      assert_equal biquadFilter##.numberOfInputs 1;
+      assert_equal biquadFilter##.numberOfOutputs 1;
+      assert_equal biquadFilter##.channelCountMode (Js.string "max");
+      assert_equal biquadFilter##.channelCount 2;
+      assert_equal biquadFilter##.channelInterpretation (Js.string "speakers");
 
       biquadFilter##.detune##.value := 100.0;
-      assert_equal (biquadFilter##.detune##.value) 100.0;
+      assert_equal biquadFilter##.detune##.value 100.0;
       biquadFilter##.frequency##.value := 200.0;
-      assert_equal (biquadFilter##.frequency##.value) 200.0;
+      assert_equal biquadFilter##.frequency##.value 200.0;
       biquadFilter##._type := (Js.string "lowpass");
-      assert_equal (biquadFilter ##._type) (Js.string "lowpass");
+      assert_equal biquadFilter ##._type (Js.string "lowpass");
       biquadFilter##._Q##.value := 2.0;
-      assert_equal (biquadFilter##._Q##.value) 2.0;
+      assert_equal biquadFilter##._Q##.value 2.0;
       biquadFilter##.gain##.value := 2.0;
-      assert_equal (biquadFilter##.gain##.value) 2.0;
+      assert_equal biquadFilter##.gain##.value 2.0;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "square");
@@ -293,7 +290,7 @@ let test_set_biquadFilter_type () =
       List.iter
         (fun allowed_type ->
           biquadFilter##._type := (Js.string allowed_type);
-          assert_equal (biquadFilter##._type) (Js.string allowed_type))
+          assert_equal biquadFilter##._type (Js.string allowed_type))
         allowed_types)
 
 let test_create_convolver () =
@@ -301,15 +298,14 @@ let test_create_convolver () =
     (fun context ->
       let convolver = context##createConvolver in
 
-      assert_equal (convolver##.numberOfInputs) 1;
-      assert_equal (convolver##.numberOfOutputs) 1;
-      assert_equal (convolver##.channelCountMode) (Js.string "clamped-max");
-      assert_equal (convolver##.channelCount) 2;
-      assert_equal
-        (convolver##.channelInterpretation) (Js.string "speakers");
+      assert_equal convolver##.numberOfInputs 1;
+      assert_equal convolver##.numberOfOutputs 1;
+      assert_equal convolver##.channelCountMode (Js.string "clamped-max");
+      assert_equal convolver##.channelCount 2;
+      assert_equal convolver##.channelInterpretation (Js.string "speakers");
 
       convolver##.normalize := Js._true;
-      assert_equal (convolver##.normalize) Js._true;
+      assert_equal convolver##.normalize Js._true;
 
       let buffer_length = 100 in
       let buffer = context##createBuffer 2 buffer_length sample_rate in
@@ -336,15 +332,14 @@ let test_create_delay () =
     (fun context ->
       let delay = context##createDelay 5.0 in
 
-      assert_equal (delay##.numberOfInputs) 1;
-      assert_equal (delay##.numberOfOutputs) 1;
-      assert_equal (delay##.channelCountMode) (Js.string "max");
-      assert_equal (delay##.channelCount) 2;
-      assert_equal
-        (delay##.channelInterpretation) (Js.string "speakers");
+      assert_equal delay##.numberOfInputs 1;
+      assert_equal delay##.numberOfOutputs 1;
+      assert_equal delay##.channelCountMode (Js.string "max");
+      assert_equal delay##.channelCount 2;
+      assert_equal delay##.channelInterpretation (Js.string "speakers");
 
       delay##.delayTime##.value := 2.0;
-      assert_equal ~printer:string_of_float (delay##.delayTime##.value) 2.0;
+      assert_equal ~printer:string_of_float delay##.delayTime##.value 2.0;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "sine");
@@ -360,25 +355,24 @@ let test_create_compressor () =
     (fun context ->
       let compressor = context##createDynamicsCompressor in
 
-      assert_equal (compressor##.numberOfInputs) 1;
-      assert_equal (compressor##.numberOfOutputs) 1;
-      assert_equal (compressor##.channelCountMode) (Js.string "explicit");
-      assert_equal (compressor##.channelCount) 2;
-      assert_equal
-        (compressor##.channelInterpretation) (Js.string "speakers");
+      assert_equal compressor##.numberOfInputs 1;
+      assert_equal compressor##.numberOfOutputs 1;
+      assert_equal compressor##.channelCountMode (Js.string "explicit");
+      assert_equal compressor##.channelCount 2;
+      assert_equal compressor##.channelInterpretation (Js.string "speakers");
 
-      let (_:float) = (compressor##.reduction) in
+      let (_:float) = compressor##.reduction in
 
       compressor##.attack##.value := 2.0;
-      assert_equal (compressor##.attack##.value) 2.0;
+      assert_equal compressor##.attack##.value 2.0;
       compressor##.knee##.value := 20.0;
-      assert_equal (compressor##.knee##.value) 20.0;
+      assert_equal compressor##.knee##.value 20.0;
       compressor##.ratio##.value := 2.0;
-      assert_equal (compressor##.ratio##.value) 2.0;
+      assert_equal compressor##.ratio##.value 2.0;
       compressor##.release##.value := 2.0;
-      assert_equal (compressor##.release##.value) 2.0;
+      assert_equal compressor##.release##.value 2.0;
       compressor##.threshold##.value := 40.0;
-      assert_equal (compressor##.threshold##.value) 40.0;
+      assert_equal compressor##.threshold##.value 40.0;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "square");
@@ -394,15 +388,14 @@ let test_create_gain () =
     (fun context ->
       let gain = context##createGain in
 
-      assert_equal (gain##.numberOfInputs) 1;
-      assert_equal (gain##.numberOfOutputs) 1;
-      assert_equal (gain##.channelCountMode) (Js.string "max");
-      assert_equal (gain##.channelCount) 2;
-      assert_equal
-        (gain##.channelInterpretation) (Js.string "speakers");
+      assert_equal gain##.numberOfInputs 1;
+      assert_equal gain##.numberOfOutputs 1;
+      assert_equal gain##.channelCountMode (Js.string "max");
+      assert_equal gain##.channelCount 2;
+      assert_equal gain##.channelInterpretation (Js.string "speakers");
 
       gain##.gain##.value := 2.0;
-      assert_equal (gain##.gain##.value) 2.0;
+      assert_equal gain##.gain##.value 2.0;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "square");
@@ -418,17 +411,16 @@ let test_create_stereo_panner () =
     (fun context ->
       let stereoPanner = context##createStereoPanner in
 
-      assert_equal (stereoPanner##.numberOfInputs) 1;
-      assert_equal (stereoPanner##.numberOfOutputs) 1;
-      assert_equal (stereoPanner##.channelCountMode) (Js.string "clamped-max");
-      assert_equal (stereoPanner##.channelCount) 2;
-      assert_equal
-        (stereoPanner##.channelInterpretation) (Js.string "speakers");
+      assert_equal stereoPanner##.numberOfInputs 1;
+      assert_equal stereoPanner##.numberOfOutputs 1;
+      assert_equal stereoPanner##.channelCountMode (Js.string "clamped-max");
+      assert_equal stereoPanner##.channelCount 2;
+      assert_equal stereoPanner##.channelInterpretation (Js.string "speakers");
 
       stereoPanner##.pan##.value := (-0.5);
-      assert_equal ~printer:string_of_float (stereoPanner##.pan##.value) (-0.5);
+      assert_equal ~printer:string_of_float stereoPanner##.pan##.value (-0.5);
       stereoPanner##.pan##.value := 0.5;
-      assert_equal ~printer:string_of_float (stereoPanner##.pan##.value) 0.5;
+      assert_equal ~printer:string_of_float stereoPanner##.pan##.value 0.5;
 
       let oscillator = context##createOscillator in
       oscillator##._type := (Js.string "sine");
@@ -461,19 +453,18 @@ let test_create_waveShaper () =
     (fun context ->
       let waveShaper = context##createWaveShaper in
 
-      assert_equal (waveShaper##.numberOfInputs) 1;
-      assert_equal (waveShaper##.numberOfOutputs) 1;
-      assert_equal (waveShaper##.channelCountMode) (Js.string "max");
-      assert_equal (waveShaper##.channelCount) 2;
-      assert_equal
-        (waveShaper##.channelInterpretation) (Js.string "speakers");
+      assert_equal waveShaper##.numberOfInputs 1;
+      assert_equal waveShaper##.numberOfOutputs 1;
+      assert_equal waveShaper##.channelCountMode (Js.string "max");
+      assert_equal waveShaper##.channelCount 2;
+      assert_equal waveShaper##.channelInterpretation (Js.string "speakers");
 
       waveShaper##.oversample := (Js.string "none");
-      assert_equal (waveShaper##.oversample) (Js.string "none");
+      assert_equal waveShaper##.oversample (Js.string "none");
       waveShaper##.oversample := (Js.string "2x");
-      assert_equal (waveShaper##.oversample) (Js.string "2x");
+      assert_equal waveShaper##.oversample (Js.string "2x");
       waveShaper##.oversample := (Js.string "4x");
-      assert_equal (waveShaper##.oversample) (Js.string "4x");
+      assert_equal waveShaper##.oversample (Js.string "4x");
 
       waveShaper##.curve := (make_distortion_curve 10.0);
 
