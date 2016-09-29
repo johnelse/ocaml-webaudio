@@ -160,6 +160,9 @@ and audioContext = object
   method createPeriodicWave :
     Typed_array.float32Array Js.t ->
     Typed_array.float32Array Js.t -> periodicWave Js.t Js.meth
+
+  method decodeAudioData :
+    Typed_array.arrayBuffer Js.t -> (audioBuffer Js.t -> unit) -> unit Js.meth
 end
 
 val audioContext : audioContext Js.t Js.constr

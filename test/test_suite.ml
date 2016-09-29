@@ -497,6 +497,32 @@ let test_create_periodic_wave () =
       oscillator##start;
       oscillator##stop)
 
+let with_audioBuffer context uri fn =
+  Lwt.bind
+    XmlHttpRequest.(
+      perform_raw ~response_type:ArrayBuffer "data/sound.ogg")
+    (fun response ->
+      Lwt.return (Js.Opt.iter
+        response.XmlHttpRequest.content
+        (fun arrayBuffer -> context##decodeAudioData arrayBuffer fn)))
+
+let test_decode_audio_data =
+  with_context_async
+    (fun context callback ->
+      Lwt_js_events.async
+        (fun () ->
+          (with_audioBuffer context "data/soung.ogg"
+            (fun buffer ->
+              let bufferSource = context##createBufferSource in
+              bufferSource##.buffer := buffer;
+
+              bufferSource##.onended :=
+                Dom_html.handler (fun _ -> callback (); Js._false);
+
+              bufferSource##connect
+                (context##.destination :> WebAudio.audioNode Js.t);
+              bufferSource##start))))
+
 let suite =
   "base_suite" >::: [
     "test_is_supported" >:: test_is_supported;
@@ -525,4 +551,5 @@ let suite =
     "test_create_stereo_panner" >:: test_create_stereo_panner;
     "test_create_waveShaper" >:: test_create_waveShaper;
     "test_create_periodic_wave" >:: test_create_periodic_wave;
+    "test_decode_audio_data" >:~ test_decode_audio_data;
   ]
