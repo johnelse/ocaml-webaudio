@@ -86,6 +86,14 @@ and biquadFilterNode = object
   method gain : audioParam Js.t Js.readonly_prop
 end
 
+and channelMergerNode = object
+  inherit audioNode
+end
+
+and channelSplitterNode = object
+  inherit audioNode
+end
+
 and convolverNode = object
   inherit audioNode
 
@@ -167,6 +175,8 @@ and audioContext = object
   method createAnalyser : analyserNode Js.t Js.meth
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createBufferSource : audioBufferSourceNode Js.t Js.meth
+  method createChannelMerger : int -> channelMergerNode Js.t Js.meth
+  method createChannelSplitter : int -> channelSplitterNode Js.t Js.meth
   method createConvolver : convolverNode Js.t Js.meth
   method createDelay : float -> delayNode Js.t Js.meth
   method createDynamicsCompressor : dynamicsCompressorNode Js.t Js.meth

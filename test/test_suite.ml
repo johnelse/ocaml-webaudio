@@ -296,6 +296,52 @@ let oscillator =
     "test_oscillator_onended" >:~ test_oscillator_onended;
   ]
 
+let test_create_merger () =
+  with_context_sync
+    (fun context ->
+      let merger = context##createChannelMerger 4 in
+
+      assert_equal merger##.numberOfInputs 4;
+      assert_equal merger##.numberOfOutputs 1;
+      assert_equal merger##.channelCountMode (Js.string "explicit");
+      assert_equal merger##.channelCount 1;
+      assert_equal merger##.channelInterpretation (Js.string "speakers"))
+
+let test_create_splitter () =
+  with_context_sync
+    (fun context ->
+      let splitter = context##createChannelSplitter 4 in
+
+      assert_equal splitter##.numberOfInputs 1;
+      assert_equal splitter##.numberOfOutputs 4;
+      assert_equal splitter##.channelCountMode (Js.string "max");
+      assert_equal splitter##.channelCount 2;
+      assert_equal splitter##.channelInterpretation (Js.string "speakers"))
+
+let test_create_splitter_merger () =
+  with_context_sync
+    (fun context ->
+      let splitter = context##createChannelSplitter 2 in
+      let merger = context##createChannelMerger 2 in
+
+      let oscillator = context##createOscillator in
+      oscillator##.frequency##.value := 200.0;
+      oscillator##._type := (Js.string "square");
+
+      oscillator##connect (splitter :> WebAudio.audioNode Js.t);
+      splitter##connect_outputToInput (merger :> WebAudio.audioNode Js.t) 0 1;
+      splitter##connect_outputToInput (merger :> WebAudio.audioNode Js.t) 1 0;
+
+      oscillator##start;
+      oscillator##stop)
+
+let channels =
+  "channels" >::: [
+    "test_create_merger" >:: test_create_merger;
+    "test_create_splitter" >:: test_create_splitter;
+    "test_create_splitter_merger" >:: test_create_splitter_merger;
+  ]
+
 let test_create_analyser () =
   with_context_sync
     (fun context ->
@@ -619,5 +665,6 @@ let suite =
     environment;
     buffer;
     oscillator;
+    channels;
     nodes;
   ]
