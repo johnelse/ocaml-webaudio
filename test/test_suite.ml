@@ -68,6 +68,16 @@ let test_destination () =
         "maxChannelCount should be an expected number"
         (List.mem destination##.maxChannelCount [2; 10000]))
 
+let environment =
+  "environment" >::: [
+    "test_is_supported" >:: test_is_supported;
+    "test_create_context" >:: test_create_context;
+    "test_context_fields" >:: test_context_fields;
+    "test_suspend_resume" >:: test_suspend_resume;
+    "test_context_onstatechange" >:~ test_context_onstatechange;
+    "test_destination" >:: test_destination;
+  ]
+
 let buffer_length = 44100
 let sample_rate = 44100.0
 let pi = 2.0 *. (asin 1.0)
@@ -213,6 +223,19 @@ let test_decode_audio_data =
                 (context##.destination :> WebAudio.audioNode Js.t);
               bufferSource##start))))
 
+let buffer =
+  "buffer" >::: [
+    "test_create_buffer" >:: test_create_buffer;
+    "test_buffer_getChannelData" >:: test_buffer_getChannelData;
+    "test_buffer_copyFromChannel" >:: test_buffer_copyFromChannel;
+    "test_buffer_copyToChannel" >:: test_buffer_copyToChannel;
+    "test_buffer_copy_both_ways" >:: test_buffer_copy_both_ways;
+    "test_create_buffer_source" >:: test_create_buffer_source;
+    "test_play_buffer_source" >:: test_play_buffer_source;
+    "test_buffer_source_onended" >:~ test_buffer_source_onended;
+    "test_decode_audio_data" >:~ test_decode_audio_data;
+  ]
+
 let test_create_oscillator () =
   with_context_sync
     (fun context ->
@@ -265,6 +288,13 @@ let test_oscillator_onended =
         Dom_html.handler (fun _ -> callback (); Js._false);
 
       oscillator##stop)
+
+let oscillator =
+  "oscillator" >::: [
+    "test_create_oscillator" >:: test_create_oscillator;
+    "test_set_oscillator_type" >:: test_set_oscillator_type;
+    "test_oscillator_onended" >:~ test_oscillator_onended;
+  ]
 
 let test_create_analyser () =
   with_context_sync
@@ -570,26 +600,8 @@ let test_create_periodic_wave () =
       oscillator##start;
       oscillator##stop)
 
-let suite =
-  "base_suite" >::: [
-    "test_is_supported" >:: test_is_supported;
-    "test_create_context" >:: test_create_context;
-    "test_context_fields" >:: test_context_fields;
-    "test_suspend_resume" >:: test_suspend_resume;
-    "test_context_onstatechange" >:~ test_context_onstatechange;
-    "test_destination" >:: test_destination;
-    "test_create_buffer" >:: test_create_buffer;
-    "test_buffer_getChannelData" >:: test_buffer_getChannelData;
-    "test_buffer_copyFromChannel" >:: test_buffer_copyFromChannel;
-    "test_buffer_copyToChannel" >:: test_buffer_copyToChannel;
-    "test_buffer_copy_both_ways" >:: test_buffer_copy_both_ways;
-    "test_create_buffer_source" >:: test_create_buffer_source;
-    "test_play_buffer_source" >:: test_play_buffer_source;
-    "test_buffer_source_onended" >:~ test_buffer_source_onended;
-    "test_decode_audio_data" >:~ test_decode_audio_data;
-    "test_create_oscillator" >:: test_create_oscillator;
-    "test_set_oscillator_type" >:: test_set_oscillator_type;
-    "test_oscillator_onended" >:~ test_oscillator_onended;
+let nodes =
+  "nodes" >::: [
     "test_create_analyser" >:: test_create_analyser;
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
@@ -600,4 +612,12 @@ let suite =
     "test_create_stereo_panner" >:: test_create_stereo_panner;
     "test_create_waveShaper" >:: test_create_waveShaper;
     "test_create_periodic_wave" >:: test_create_periodic_wave;
+  ]
+
+let suite =
+  "base_suite" >::: [
+    environment;
+    buffer;
+    oscillator;
+    nodes;
   ]
