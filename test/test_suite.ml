@@ -240,6 +240,53 @@ let test_oscillator_onended =
 
       oscillator##stop)
 
+let test_create_analyser () =
+  with_context_sync
+    (fun context ->
+      let analyser = context##createAnalyser in
+
+      assert_equal analyser##.numberOfInputs 1;
+      assert_equal analyser##.numberOfOutputs 1;
+      assert_equal analyser##.channelCountMode (Js.string "max");
+      assert_equal analyser##.channelCount 1;
+      assert_equal analyser##.channelInterpretation (Js.string "speakers");
+
+      let fftSize = 2048 in
+      let frequencyBinCount = fftSize / 2 in
+      analyser##.fftSize := fftSize;
+      assert_equal analyser##.fftSize fftSize;
+      assert_equal analyser##.frequencyBinCount frequencyBinCount;
+
+      analyser##.minDecibels := -40.0;
+      assert_equal analyser##.minDecibels (-40.0);
+      analyser##.maxDecibels := -20.0;
+      assert_equal analyser##.maxDecibels (-20.0);
+      analyser##.smoothingTimeConstant := 0.5;
+      assert_equal analyser##.smoothingTimeConstant 0.5;
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (analyser :> WebAudio.audioNode Js.t);
+      analyser##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+
+      let floatFrequencyData =
+        new%js Typed_array.float32Array frequencyBinCount in
+      analyser##getFloatFrequencyData floatFrequencyData;
+
+      let byteFrequencyData = new%js Typed_array.uint8Array frequencyBinCount in
+      analyser##getByteFrequencyData byteFrequencyData;
+
+      let floatTimeDomainData = new%js Typed_array.float32Array fftSize in
+      analyser##getFloatTimeDomainData floatTimeDomainData;
+
+      let byteTimeDomainData = new%js Typed_array.uint8Array fftSize in
+      analyser##getByteTimeDomainData byteTimeDomainData;
+
+      oscillator##stop)
+
 let test_create_biquadFilter () =
   with_context_sync
     (fun context ->
@@ -542,6 +589,7 @@ let suite =
     "test_create_oscillator" >:: test_create_oscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
+    "test_create_analyser" >:: test_create_analyser;
     "test_create_biquadFilter" >:: test_create_biquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
     "test_create_convolver" >:: test_create_convolver;

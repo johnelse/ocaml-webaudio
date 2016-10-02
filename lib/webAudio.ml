@@ -36,6 +36,21 @@ and audioParam = object
     Typed_array.float32Array Js.t -> float -> float -> unit Js.meth
 end
 
+and analyserNode = object
+  inherit audioNode
+
+  method fftSize : int Js.prop
+  method frequencyBinCount : int Js.readonly_prop
+  method minDecibels : float Js.prop
+  method maxDecibels : float Js.prop
+  method smoothingTimeConstant : float Js.prop
+
+  method getFloatFrequencyData : Typed_array.float32Array Js.t -> unit Js.meth
+  method getByteFrequencyData : Typed_array.uint8Array Js.t -> unit Js.meth
+  method getFloatTimeDomainData : Typed_array.float32Array Js.t -> unit Js.meth
+  method getByteTimeDomainData : Typed_array.uint8Array Js.t -> unit Js.meth
+end
+
 and audioBufferSourceNode = object
   inherit audioNode
 
@@ -147,6 +162,7 @@ and audioContext = object
 
   method createBuffer : int -> int -> float -> audioBuffer Js.t Js.meth
 
+  method createAnalyser : analyserNode Js.t Js.meth
   method createBiquadFilter : biquadFilterNode Js.t Js.meth
   method createBufferSource : audioBufferSourceNode Js.t Js.meth
   method createConvolver : convolverNode Js.t Js.meth
