@@ -64,7 +64,7 @@ and audioBufferSourceNode = object
   method playbackRate : audioParam Js.t Js.readonly_prop
 
   method onended :
-    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
+    ('self Js.t, 'self Dom.event Js.t) Dom.event_listener Js.writeonly_prop
 
   method start : unit Js.meth
   method stop : unit Js.meth
@@ -138,7 +138,7 @@ and oscillatorNode = object ('self)
   method setPeriodicWave : periodicWave Js.t -> unit Js.meth
 
   method onended :
-    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
+    ('self Js.t, 'self Dom.event Js.t) Dom.event_listener Js.writeonly_prop
 end
 
 and stereoPannerNode = object
@@ -164,7 +164,7 @@ and audioContext = object
   method state : Js.js_string Js.t Js.readonly_prop
 
   method onstatechange :
-    ('self Js.t, Dom_html.event Js.t) Dom_html.event_listener Js.writeonly_prop
+    ('self Js.t, 'self Dom.event Js.t) Dom.event_listener Js.writeonly_prop
 
   method close : unit Js.meth
   method resume : unit Js.meth

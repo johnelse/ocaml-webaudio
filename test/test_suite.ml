@@ -44,7 +44,7 @@ let test_context_onstatechange =
       let callback_called = ref false in
 
       context##.onstatechange :=
-        Dom_html.handler (fun _ ->
+        Dom.handler (fun _ ->
           if not !callback_called then begin
             callback_called := true;
             callback ()
@@ -192,7 +192,7 @@ let test_bufferSource_onended =
       bufferSource##.loopEnd := 0.1;
 
       bufferSource##.onended :=
-        Dom_html.handler (fun _ -> callback (); Js._false);
+        Dom.handler (fun _ -> callback (); Js._false);
 
       bufferSource##connect (context##.destination :> WebAudio.audioNode Js.t);
       bufferSource##start)
@@ -217,7 +217,7 @@ let test_decodeAudioData =
               bufferSource##.buffer := buffer;
 
               bufferSource##.onended :=
-                Dom_html.handler (fun _ -> callback (); Js._false);
+                Dom.handler (fun _ -> callback (); Js._false);
 
               bufferSource##connect
                 (context##.destination :> WebAudio.audioNode Js.t);
@@ -285,7 +285,7 @@ let test_oscillator_onended =
       oscillator##start;
 
       oscillator##.onended :=
-        Dom_html.handler (fun _ -> callback (); Js._false);
+        Dom.handler (fun _ -> callback (); Js._false);
 
       oscillator##stop)
 
