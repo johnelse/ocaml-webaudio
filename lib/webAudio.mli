@@ -193,6 +193,27 @@ and audioContext = object
     Typed_array.arrayBuffer Js.t -> (audioBuffer Js.t -> unit) -> unit Js.meth
 end
 
+and offlineAudioCompletionEvent = object
+  inherit [offlineAudioContext] Dom.event
+
+  method renderedBuffer : audioBuffer Js.t Js.readonly_prop
+end
+
+and offlineAudioContext = object
+  inherit audioContext
+
+  method length : int Js.readonly_prop
+
+  method oncomplete :
+    ('self Js.t, offlineAudioCompletionEvent Js.t)
+      Dom.event_listener Js.writeonly_prop
+
+  method startRendering : unit Js.meth
+end
+
 val audioContext : audioContext Js.t Js.constr
+
+val offlineAudioContext :
+  (int -> int -> float -> offlineAudioContext Js.t) Js.constr
 
 val is_supported : unit -> bool
