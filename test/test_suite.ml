@@ -82,7 +82,7 @@ let buffer_length = 44100
 let sample_rate = 44100.0
 let pi = 2.0 *. (asin 1.0)
 
-let test_create_buffer () =
+let test_createBuffer () =
   with_context_sync
     (fun context ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
@@ -141,7 +141,7 @@ let test_buffer_copy_both_ways () =
         assert_equal (Typed_array.get src i) (Typed_array.get dst i)
       done)
 
-let test_create_buffer_source () =
+let test_createBufferSource () =
   with_context_sync
     (fun context ->
       let bufferSource = context##createBufferSource in
@@ -162,7 +162,7 @@ let test_create_buffer_source () =
       bufferSource##.playbackRate##.value := 0.5;
       assert_equal bufferSource##.playbackRate##.value 0.5)
 
-let test_play_buffer_source () =
+let test_play_bufferSource () =
   with_context_sync
     (fun context ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
@@ -177,7 +177,7 @@ let test_play_buffer_source () =
       bufferSource##start;
       bufferSource##stop)
 
-let test_buffer_source_onended =
+let test_bufferSource_onended =
   with_context_async
     (fun context callback ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
@@ -206,7 +206,7 @@ let with_audioBuffer context uri fn =
         response.XmlHttpRequest.content
         (fun arrayBuffer -> context##decodeAudioData arrayBuffer fn)))
 
-let test_decode_audio_data =
+let test_decodeAudioData =
   with_context_async
     (fun context callback ->
       Lwt_js_events.async
@@ -225,18 +225,18 @@ let test_decode_audio_data =
 
 let buffer =
   "buffer" >::: [
-    "test_create_buffer" >:: test_create_buffer;
+    "test_createBuffer" >:: test_createBuffer;
     "test_buffer_getChannelData" >:: test_buffer_getChannelData;
     "test_buffer_copyFromChannel" >:: test_buffer_copyFromChannel;
     "test_buffer_copyToChannel" >:: test_buffer_copyToChannel;
     "test_buffer_copy_both_ways" >:: test_buffer_copy_both_ways;
-    "test_create_buffer_source" >:: test_create_buffer_source;
-    "test_play_buffer_source" >:: test_play_buffer_source;
-    "test_buffer_source_onended" >:~ test_buffer_source_onended;
-    "test_decode_audio_data" >:~ test_decode_audio_data;
+    "test_createBufferSource" >:: test_createBufferSource;
+    "test_play_bufferSource" >:: test_play_bufferSource;
+    "test_bufferSource_onended" >:~ test_bufferSource_onended;
+    "test_decodeAudioData" >:~ test_decodeAudioData;
   ]
 
-let test_create_oscillator () =
+let test_createOscillator () =
   with_context_sync
     (fun context ->
       let oscillator = context##createOscillator in
@@ -291,12 +291,12 @@ let test_oscillator_onended =
 
 let oscillator =
   "oscillator" >::: [
-    "test_create_oscillator" >:: test_create_oscillator;
+    "test_createOscillator" >:: test_createOscillator;
     "test_set_oscillator_type" >:: test_set_oscillator_type;
     "test_oscillator_onended" >:~ test_oscillator_onended;
   ]
 
-let test_create_merger () =
+let test_createChannelMerger () =
   with_context_sync
     (fun context ->
       let merger = context##createChannelMerger 4 in
@@ -307,7 +307,7 @@ let test_create_merger () =
       assert_equal merger##.channelCount 1;
       assert_equal merger##.channelInterpretation (Js.string "speakers"))
 
-let test_create_splitter () =
+let test_createChannelSplitter () =
   with_context_sync
     (fun context ->
       let splitter = context##createChannelSplitter 4 in
@@ -337,12 +337,12 @@ let test_create_splitter_merger () =
 
 let channels =
   "channels" >::: [
-    "test_create_merger" >:: test_create_merger;
-    "test_create_splitter" >:: test_create_splitter;
+    "test_createChannelMerger" >:: test_createChannelMerger;
+    "test_createChannelSplitter" >:: test_createChannelSplitter;
     "test_create_splitter_merger" >:: test_create_splitter_merger;
   ]
 
-let test_create_analyser () =
+let test_createAnalyser () =
   with_context_sync
     (fun context ->
       let analyser = context##createAnalyser in
@@ -389,7 +389,7 @@ let test_create_analyser () =
 
       oscillator##stop)
 
-let test_create_biquadFilter () =
+let test_createBiquadFilter () =
   with_context_sync
     (fun context ->
       let biquadFilter = context##createBiquadFilter in
@@ -442,7 +442,7 @@ let test_set_biquadFilter_type () =
           assert_equal biquadFilter##._type (Js.string allowed_type))
         allowed_types)
 
-let test_create_convolver () =
+let test_createConvolver () =
   with_context_sync
     (fun context ->
       let convolver = context##createConvolver in
@@ -476,7 +476,7 @@ let test_create_convolver () =
       oscillator##start;
       oscillator##stop)
 
-let test_create_delay () =
+let test_createDelay () =
   with_context_sync
     (fun context ->
       let delay = context##createDelay 5.0 in
@@ -499,7 +499,7 @@ let test_create_delay () =
       oscillator##start;
       oscillator##stop)
 
-let test_create_compressor () =
+let test_createDynamicsCompressor () =
   with_context_sync
     (fun context ->
       let compressor = context##createDynamicsCompressor in
@@ -532,7 +532,7 @@ let test_create_compressor () =
       oscillator##start;
       oscillator##stop)
 
-let test_create_gain () =
+let test_createGain () =
   with_context_sync
     (fun context ->
       let gain = context##createGain in
@@ -555,7 +555,7 @@ let test_create_gain () =
       oscillator##start;
       oscillator##stop)
 
-let test_create_stereo_panner () =
+let test_createStereoPanner () =
   with_context_sync
     (fun context ->
       let stereoPanner = context##createStereoPanner in
@@ -597,7 +597,7 @@ let make_distortion_curve amount =
   done;
   curve
 
-let test_create_waveShaper () =
+let test_createWaveShaper () =
   with_context_sync
     (fun context ->
       let waveShaper = context##createWaveShaper in
@@ -626,7 +626,7 @@ let test_create_waveShaper () =
       oscillator##start;
       oscillator##stop)
 
-let test_create_periodic_wave () =
+let test_createPeriodicWave () =
   with_context_sync
     (fun context ->
       let real = new%js Typed_array.float32Array 2 in
@@ -648,16 +648,16 @@ let test_create_periodic_wave () =
 
 let nodes =
   "nodes" >::: [
-    "test_create_analyser" >:: test_create_analyser;
-    "test_create_biquadFilter" >:: test_create_biquadFilter;
+    "test_createAnalyser" >:: test_createAnalyser;
+    "test_createBiquadFilter" >:: test_createBiquadFilter;
     "test_set_biquadFilter_type" >:: test_set_biquadFilter_type;
-    "test_create_convolver" >:: test_create_convolver;
-    "test_create_delay" >:: test_create_delay;
-    "test_create_compressor" >:: test_create_compressor;
-    "test_create_gain" >:: test_create_gain;
-    "test_create_stereo_panner" >:: test_create_stereo_panner;
-    "test_create_waveShaper" >:: test_create_waveShaper;
-    "test_create_periodic_wave" >:: test_create_periodic_wave;
+    "test_createConvolver" >:: test_createConvolver;
+    "test_createDelay" >:: test_createDelay;
+    "test_createDynamicsCompressor" >:: test_createDynamicsCompressor;
+    "test_createGain" >:: test_createGain;
+    "test_createStereoPanner" >:: test_createStereoPanner;
+    "test_createWaveShaper" >:: test_createWaveShaper;
+    "test_createPeriodicWave" >:: test_createPeriodicWave;
   ]
 
 let suite =
