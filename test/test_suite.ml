@@ -563,6 +563,32 @@ let test_createGain () =
       oscillator##start;
       oscillator##stop)
 
+let test_createIIRFilter () =
+  with_context_sync
+    (fun context ->
+      let max_order = 20 in
+      let feedforward = new%js Typed_array.float32Array max_order in
+      let feedback = new%js Typed_array.float32Array max_order in
+      Typed_array.set feedforward 0 1.0;
+      Typed_array.set feedback 0 1.0;
+      Typed_array.set feedback 1 0.5;
+      let filter = context##createIIRFilter feedforward feedback in
+
+      assert_equal filter##.numberOfInputs 1;
+      assert_equal filter##.numberOfOutputs 1;
+      assert_equal filter##.channelCountMode (Js.string "max");
+      assert_equal filter##.channelCount 2;
+      assert_equal filter##.channelInterpretation (Js.string "speakers");
+
+      let oscillator = context##createOscillator in
+      oscillator##._type := (Js.string "square");
+      oscillator##.frequency##.value := 200.0;
+
+      oscillator##connect (filter :> WebAudio.audioNode Js.t);
+      filter##connect (context##.destination :> WebAudio.audioNode Js.t);
+      oscillator##start;
+      oscillator##stop)
+
 let test_createMediaElementSource () =
   with_context_sync
     (fun context ->
@@ -688,6 +714,7 @@ let nodes =
     "test_createDelay" >:: test_createDelay;
     "test_createDynamicsCompressor" >:: test_createDynamicsCompressor;
     "test_createGain" >:: test_createGain;
+    "test_createIIRFilter" >:: test_createIIRFilter;
     "test_createMediaElementSource" >:: test_createMediaElementSource;
     "test_createStereoPanner" >:: test_createStereoPanner;
     "test_createWaveShaper" >:: test_createWaveShaper;

@@ -125,6 +125,10 @@ and gainNode = object
   method gain : audioParam Js.t Js.readonly_prop
 end
 
+and iirFilterNode = object
+  inherit audioNode
+end
+
 and mediaElementSourceNode = object
   inherit audioNode
 end
@@ -185,6 +189,9 @@ and audioContext = object
   method createDelay : float -> delayNode Js.t Js.meth
   method createDynamicsCompressor : dynamicsCompressorNode Js.t Js.meth
   method createGain : gainNode Js.t Js.meth
+  method createIIRFilter :
+    Typed_array.float32Array Js.t ->
+    Typed_array.float32Array Js.t -> iirFilterNode Js.t Js.meth
   method createMediaElementSource :
     Dom_html.mediaElement Js.t -> mediaElementSourceNode Js.t Js.meth
   method createOscillator : oscillatorNode Js.t Js.meth
