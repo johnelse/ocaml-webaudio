@@ -568,6 +568,31 @@ let test_createGain () =
       oscillator##start;
       oscillator##stop)
 
+let test_createMediaElementSource () =
+  with_context_sync
+    (fun context ->
+      let audioElement = Dom_html.(createAudio document) in
+      audioElement##.src := (Js.string "data/sound.ogg");
+      let child =
+        Dom_html.document##.body##appendChild (audioElement :> Dom.node Js.t) in
+
+      let mediaElementSource = context##createMediaElementSource audioElement in
+      assert_equal mediaElementSource##.numberOfInputs 0;
+      assert_equal mediaElementSource##.numberOfOutputs 1;
+      assert_equal mediaElementSource##.channelCountMode (Js.string "max");
+      assert_equal mediaElementSource##.channelCount 2;
+      assert_equal
+        mediaElementSource##.channelInterpretation (Js.string "speakers");
+
+      mediaElementSource##connect
+        (context##.destination :> WebAudio.audioNode Js.t);
+      audioElement##play;
+      audioElement##pause;
+
+      let (_ : Dom.node Js.t) =
+        Dom_html.document##.body##removeChild child in
+      ())
+
 let test_createStereoPanner () =
   with_context_sync
     (fun context ->
@@ -668,6 +693,7 @@ let nodes =
     "test_createDelay" >:: test_createDelay;
     "test_createDynamicsCompressor" >:: test_createDynamicsCompressor;
     "test_createGain" >:: test_createGain;
+    "test_createMediaElementSource" >:: test_createMediaElementSource;
     "test_createStereoPanner" >:: test_createStereoPanner;
     "test_createWaveShaper" >:: test_createWaveShaper;
     "test_createPeriodicWave" >:: test_createPeriodicWave;
