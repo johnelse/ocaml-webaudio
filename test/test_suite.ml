@@ -50,18 +50,13 @@ let test_suspend_resume () =
 
 let test_context_onstatechange =
   with_context_async
-    (fun context callback ->
+    (fun context wrapper ->
       (* onstatechange will be raised twice - once when the context's state is
-         set to "running" and once when its state is set to "closed". Use a flag
-         to make sure the callback only gets called once. *)
-      let callback_called = ref false in
-
+         set to "running" and once when its state is set to "closed". Webtest
+         will handle the first one to be called. *)
       context##.onstatechange :=
         Dom.handler (fun _ ->
-          if not !callback_called then begin
-            callback_called := true;
-            callback ()
-          end;
+          wrapper Async.noop;
           Js._false))
 
 let test_destination () =
@@ -192,7 +187,7 @@ let test_play_bufferSource () =
 
 let test_bufferSource_onended =
   with_context_async
-    (fun context callback ->
+    (fun context wrapper ->
       let buffer = context##createBuffer 1 buffer_length sample_rate in
       let src = new%js Typed_array.float32Array buffer_length in
       fill_with_sine_wave src;
@@ -205,7 +200,7 @@ let test_bufferSource_onended =
       bufferSource##.loopEnd := 0.1;
 
       bufferSource##.onended :=
-        Dom.handler (fun _ -> callback (); Js._false);
+        Dom.handler (fun _ -> wrapper Async.noop; Js._false);
 
       bufferSource##connect (context##.destination :> WebAudio.audioNode Js.t);
       bufferSource##start)
@@ -221,7 +216,7 @@ let with_audioBuffer context uri fn =
 
 let test_decodeAudioData =
   with_context_async
-    (fun context callback ->
+    (fun context wrapper ->
       Lwt_js_events.async
         (fun () ->
           (with_audioBuffer context "data/soung.ogg"
@@ -230,7 +225,7 @@ let test_decodeAudioData =
               bufferSource##.buffer := buffer;
 
               bufferSource##.onended :=
-                Dom.handler (fun _ -> callback (); Js._false);
+                Dom.handler (fun _ -> wrapper Async.noop; Js._false);
 
               bufferSource##connect
                 (context##.destination :> WebAudio.audioNode Js.t);
@@ -291,14 +286,14 @@ let test_set_oscillator_type () =
 
 let test_oscillator_onended =
   with_context_async
-    (fun context callback ->
+    (fun context wrapper ->
       let oscillator = context##createOscillator in
 
       oscillator##connect (context##.destination :> WebAudio.audioNode Js.t);
       oscillator##start;
 
       oscillator##.onended :=
-        Dom.handler (fun _ -> callback (); Js._false);
+        Dom.handler (fun _ -> wrapper Async.noop; Js._false);
 
       oscillator##stop)
 
@@ -707,7 +702,7 @@ let test_create_offlineAudioContext () =
 
 let test_offline_render =
   with_offline_context_async 1 buffer_length sample_rate
-    (fun context callback ->
+    (fun context wrapper ->
       let src = new%js Typed_array.float32Array buffer_length in
       let dst = new%js Typed_array.float32Array buffer_length in
       let buffer = context##createBuffer 1 buffer_length sample_rate in
@@ -721,13 +716,12 @@ let test_offline_render =
 
       context##.oncomplete :=
         Dom.handler (fun completionEvent ->
-          completionEvent##.renderedBuffer##copyToChannel dst 0 0;
+          wrapper (fun () ->
+            completionEvent##.renderedBuffer##copyToChannel dst 0 0;
 
-          for i = 0 to buffer_length - 1 do
-            assert_equal (Typed_array.get src i) (Typed_array.get dst i)
-          done;
-
-          callback ();
+            for i = 0 to buffer_length - 1 do
+              assert_equal (Typed_array.get src i) (Typed_array.get dst i)
+            done);
 
           Js._false);
 
