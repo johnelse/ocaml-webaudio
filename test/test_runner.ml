@@ -1,1 +1,1 @@
-let () = Webtest_runner.setup Test_suite.suite
+let () = Webtest_js.Runner.setup Test_suite.suite
