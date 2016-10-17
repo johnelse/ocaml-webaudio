@@ -718,7 +718,7 @@ let test_offline_render =
       context##.oncomplete :=
         Dom.handler (fun completionEvent ->
           wrapper (fun () ->
-            completionEvent##.renderedBuffer##copyToChannel dst 0 0;
+            completionEvent##.renderedBuffer##copyFromChannel dst 0 0;
 
             for i = 0 to buffer_length - 1 do
               assert_equal (Typed_array.get src i) (Typed_array.get dst i)
