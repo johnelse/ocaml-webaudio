@@ -127,10 +127,10 @@ let test_buffer_copyToChannel () =
       buffer##copyToChannel src 0 0)
 
 let fill_with_sine_wave array =
+  (* Fill buffer with a second of 440Hz sine wave. *)
+  let frequency = 440.0 in
+  let samples_per_period = sample_rate /. frequency in
   for i = 0 to array##.length - 1 do
-    (* Fill buffer with a second of 440Hz sine wave. *)
-    let frequency = 440.0 in
-    let samples_per_period = sample_rate /. frequency in
     let amplitude =
       sin (2.0 *. pi *. (float_of_int i) /. samples_per_period) in
     Typed_array.set array i amplitude
