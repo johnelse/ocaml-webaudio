@@ -705,6 +705,7 @@ let test_offline_render =
     (fun context wrapper ->
       let src = new%js Typed_array.float32Array buffer_length in
       let dst = new%js Typed_array.float32Array buffer_length in
+      fill_with_sine_wave src;
       let buffer = context##createBuffer 1 buffer_length sample_rate in
       buffer##copyToChannel src 0 0;
 
