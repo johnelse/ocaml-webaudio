@@ -73,7 +73,7 @@ let test_destination () =
       (* TODO: Figure out why snd-dummy causes Firefox to report
                maxChannelCount as 10000! *)
       assert_true
-        "maxChannelCount should be an expected number"
+        ~label:"maxChannelCount should be an expected number"
         (List.mem destination##.maxChannelCount [2; 10000]))
 
 let environment =
