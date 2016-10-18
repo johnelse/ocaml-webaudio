@@ -88,7 +88,7 @@ let environment =
 
 let buffer_length = 44100
 let sample_rate = 44100.0
-let pi = 2.0 *. (asin 1.0)
+let pi = Js.math##._PI
 
 let test_createBuffer () =
   with_context_sync
