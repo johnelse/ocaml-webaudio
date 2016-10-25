@@ -208,7 +208,7 @@ let test_bufferSource_onended =
 let with_audioBuffer context uri fn =
   Lwt.bind
     XmlHttpRequest.(
-      perform_raw ~response_type:ArrayBuffer "data/sound.ogg")
+      perform_raw ~response_type:ArrayBuffer uri)
     (fun response ->
       Lwt.return (Js.Opt.iter
         response.XmlHttpRequest.content
@@ -219,7 +219,7 @@ let test_decodeAudioData =
     (fun context wrapper ->
       Lwt_js_events.async
         (fun () ->
-          (with_audioBuffer context "data/soung.ogg"
+          (with_audioBuffer context "data/sound.ogg"
             (fun buffer ->
               let bufferSource = context##createBufferSource in
               bufferSource##.buffer := buffer;
