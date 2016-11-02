@@ -6,7 +6,11 @@ dev-repo: "git://github.com/johnelse/ocaml-webaudio"
 maintainer: "john.else@gmail.com"
 available: [ ocaml-version >= "4.02.1" ]
 build: [
-  [make]
+  [
+    "./configure"
+    "--prefix" prefix
+  ]
+  [make "build"]
 ]
 build-test: [
   [make "test"]
@@ -15,7 +19,7 @@ install: [
   [make "PREFIX=%{prefix}%" "install"]
 ]
 remove: [
-  [make "PREFIX=%{prefix}%" "uninstall"]
+  ["ocamlfind" "remove" "webaudio"]
 ]
 depends: [
   "js_of_ocaml"
