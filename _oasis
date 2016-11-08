@@ -3,7 +3,7 @@ OCamlVersion: >= 4.02
 Name:        webaudio
 Version:     0.1.0
 Authors:     John Else
-License:     ISC
+License:     MIT
 Synopsis:    OCaml bindings for the Javascript Web Audio API
 Plugins:     META (0.4), DevFiles (0.4)
 BuildTools:  ocamlbuild
