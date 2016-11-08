@@ -13,6 +13,10 @@ build: [
   [make "build"]
 ]
 build-test: [
+  [
+    "./configure"
+    "--enable-tests"
+  ]
   [make "test"]
 ]
 install: [
