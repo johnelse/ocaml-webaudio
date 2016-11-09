@@ -3,6 +3,8 @@ _build
 setup.data
 setup.log
 
+geckodriver.log
+
 *.byte
 *.swp
 
