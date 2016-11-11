@@ -697,6 +697,7 @@ let nodes =
 let test_create_offlineAudioContext () =
   with_offline_context_sync 1 buffer_length sample_rate
     (fun context ->
+      assert_equal context##.length buffer_length;
       assert_equal context##.sampleRate sample_rate;
       ())
 
