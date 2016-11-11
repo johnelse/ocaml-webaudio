@@ -26,7 +26,7 @@ remove: [
   ["ocamlfind" "remove" "webaudio"]
 ]
 depends: [
-  "js_of_ocaml"
   "oasis" {build}
+  "js_of_ocaml"
   "webtest" {test}
 ]
