@@ -18,6 +18,9 @@ install:
     # travis scripts don't run dependency tests.
   - sudo ln -sf $HOME/firefox-50.0/firefox/firefox /usr/local/bin/firefox
   - sudo ln -sf $HOME/firefox-50.0/firefox/firefox-bin /usr/local/bin/firefox-bin
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 script:
   - sudo -E sudo -u $USER -E bash -ex .travis-opam.sh
 env:
