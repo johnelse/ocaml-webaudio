@@ -13,7 +13,7 @@ install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-opam.sh
   - wget https://raw.githubusercontent.com/johnelse/ocaml-webtest/master/test/setup_geckodriver.sh
   - bash -ex setup_geckodriver.sh
-  - sudo -H pip install selenium==3.0.1
+  - sudo -H pip install selenium==3.3.0
     # These links are needed to allow the dependency tests to run. Remove once
     # travis scripts don't run dependency tests.
   - sudo ln -sf $HOME/firefox-50.0/firefox/firefox /usr/local/bin/firefox
