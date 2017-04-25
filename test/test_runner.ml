@@ -20,14 +20,14 @@ let with_offline_context_sync channels length sample_rate f =
   Sync.bracket
     (fun () -> new%js WebAudio.offlineAudioContext channels length sample_rate)
     f
-    (fun context -> context##close)
+    (fun context -> ())
     ()
 
 let with_offline_context_async channels length sample_rate f =
   Async.bracket
     (fun () -> new%js WebAudio.offlineAudioContext channels length sample_rate)
     f
-    (fun context -> context##close)
+    (fun context -> ())
 
 let test_create_context () =
   with_context_sync (fun _ -> ())

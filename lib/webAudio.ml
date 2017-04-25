@@ -165,7 +165,7 @@ end
 and periodicWave = object
 end
 
-and audioContext = object
+and virtual baseAudioContext = object
   method currentTime : float Js.readonly_prop
   method destination : audioDestinationNode Js.t Js.readonly_prop
   method sampleRate : float Js.readonly_prop
@@ -174,7 +174,6 @@ and audioContext = object
   method onstatechange :
     ('self Js.t, 'self Dom.event Js.t) Dom.event_listener Js.writeonly_prop
 
-  method close : unit Js.meth
   method resume : unit Js.meth
   method suspend : unit Js.meth
 
@@ -206,6 +205,12 @@ and audioContext = object
     Typed_array.arrayBuffer Js.t -> (audioBuffer Js.t -> unit) -> unit Js.meth
 end
 
+and audioContext = object
+  inherit baseAudioContext
+
+  method close : unit Js.meth
+end
+
 and offlineAudioCompletionEvent = object
   inherit [offlineAudioContext] Dom.event
 
@@ -213,7 +218,7 @@ and offlineAudioCompletionEvent = object
 end
 
 and offlineAudioContext = object
-  inherit audioContext
+  inherit baseAudioContext
 
   method length : int Js.readonly_prop
 
