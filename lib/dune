@@ -1,0 +1,7 @@
+(library
+  (name webaudio)
+  (public_name webaudio)
+  (wrapped false)
+  (modules webAudio)
+  (preprocess (pps js_of_ocaml-ppx))
+  (libraries js_of_ocaml))
