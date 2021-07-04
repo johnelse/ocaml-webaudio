@@ -1,0 +1,13 @@
+(executable
+  (name test_runner)
+  (modes js)
+  (modules test_runner)
+  (preprocess (pps js_of_ocaml-ppx))
+  (libraries lwt webaudio webtest-js))
+
+(alias
+  (name browsertest)
+  (deps
+    (:x test_runner.bc.js)
+    (source_tree helpers))
+  (action (run helpers/test_driver.py)))
