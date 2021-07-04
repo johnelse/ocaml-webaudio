@@ -33,3 +33,14 @@ jobs:
       - run: opam install . --deps-only --with-doc --with-test
 
       - run: opam exec -- dune build
+
+      - name: Set up Python 3.8.2
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.2
+
+      - name: Install selenium
+        run:  pip install selenium==3.141.0
+
+      - name: Run browser tests
+        run:  opam exec -- dune build @browsertest
