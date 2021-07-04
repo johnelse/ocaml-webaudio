@@ -213,7 +213,6 @@ let buffer =
     "test_createBufferSource" >:: test_createBufferSource;
     "test_play_bufferSource" >:: test_play_bufferSource;
     "test_bufferSource_onended" >:~ test_bufferSource_onended;
-    "test_decodeAudioData" >:~ test_decodeAudioData;
   ]
 
 let test_createOscillator () =
