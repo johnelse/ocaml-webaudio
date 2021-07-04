@@ -463,7 +463,7 @@ let test_createConvolver () =
       assert_equal convolver##.normalize Js._true;
 
       let buffer_length = 100 in
-      let buffer = context##createBuffer 2 buffer_length sample_rate in
+      let buffer = context##createBuffer 2 buffer_length context##.sampleRate in
       let data = new%js Typed_array.float32Array buffer_length in
       for i = 0 to 99 do
         Typed_array.set data i (1.0 *. (0.9 ** (float_of_int i)))
