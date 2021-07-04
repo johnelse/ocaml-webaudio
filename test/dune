@@ -3,7 +3,7 @@
   (modes js)
   (modules buffer channels environment nodes offline oscillator rimshot test_common test_runner)
   (preprocess (pps js_of_ocaml-ppx))
-  (libraries lwt webaudio webtest-js))
+  (libraries webaudio webtest-js))
 
 (alias
   (name browsertest)
