@@ -46,11 +46,10 @@ let test_destination () =
       assert_equal destination##.channelCount 2;
       assert_equal
         (destination##.channelInterpretation) (Js.string "speakers");
-      (* TODO: Figure out why snd-dummy causes Firefox to report
-               maxChannelCount as 10000! *)
+      (* maxChannelCount is reported as 0 when running under github actions. *)
       assert_true
         ~label:"maxChannelCount should be an expected number"
-        (List.mem destination##.maxChannelCount [2; 10000]))
+        (List.mem destination##.maxChannelCount [0; 2]))
 
 let suite =
   "environment" >::: [
