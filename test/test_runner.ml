@@ -108,7 +108,7 @@ let test_buffer_getChannelData () =
       let channel0Data = buffer##getChannelData 0 in
       assert_equal channel0Data##.length buffer_length;
       assert_raises_string
-        "SyntaxError: An invalid or illegal string was specified"
+        "IndexSizeError: AudioBuffer.getChannelData: Channel number (1) is out of range"
         (fun () ->
           let (_:Typed_array.float32Array Js.t) = buffer##getChannelData 1 in
           ()))
@@ -320,9 +320,9 @@ let test_createChannelSplitter () =
 
       assert_equal splitter##.numberOfInputs 1;
       assert_equal splitter##.numberOfOutputs 4;
-      assert_equal splitter##.channelCountMode (Js.string "max");
-      assert_equal splitter##.channelCount 2;
-      assert_equal splitter##.channelInterpretation (Js.string "speakers"))
+      assert_equal splitter##.channelCountMode (Js.string "explicit");
+      assert_equal splitter##.channelCount 4;
+      assert_equal splitter##.channelInterpretation (Js.string "discrete"))
 
 let test_create_splitter_merger () =
   with_context_sync
@@ -356,7 +356,7 @@ let test_createAnalyser () =
       assert_equal analyser##.numberOfInputs 1;
       assert_equal analyser##.numberOfOutputs 1;
       assert_equal analyser##.channelCountMode (Js.string "max");
-      assert_equal analyser##.channelCount 1;
+      assert_equal analyser##.channelCount 2;
       assert_equal analyser##.channelInterpretation (Js.string "speakers");
 
       let fftSize = 2048 in
@@ -512,7 +512,7 @@ let test_createDynamicsCompressor () =
 
       assert_equal compressor##.numberOfInputs 1;
       assert_equal compressor##.numberOfOutputs 1;
-      assert_equal compressor##.channelCountMode (Js.string "explicit");
+      assert_equal compressor##.channelCountMode (Js.string "clamped-max");
       assert_equal compressor##.channelCount 2;
       assert_equal compressor##.channelInterpretation (Js.string "speakers");
 
