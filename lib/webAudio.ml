@@ -1,3 +1,5 @@
+open Js_of_ocaml
+
 class type audioBuffer = object
   method sampleRate : float Js.readonly_prop
   method length : int Js.readonly_prop
