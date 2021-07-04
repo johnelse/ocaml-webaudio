@@ -1,3 +1,4 @@
+open Js_of_ocaml
 open Webtest.Suite
 
 let test_is_supported () =
@@ -20,14 +21,14 @@ let with_offline_context_sync channels length sample_rate f =
   Sync.bracket
     (fun () -> new%js WebAudio.offlineAudioContext channels length sample_rate)
     f
-    (fun context -> ())
+    (fun _ -> ())
     ()
 
 let with_offline_context_async channels length sample_rate f =
   Async.bracket
     (fun () -> new%js WebAudio.offlineAudioContext channels length sample_rate)
     f
-    (fun context -> ())
+    (fun _ -> ())
 
 let test_create_context () =
   with_context_sync (fun _ -> ())
@@ -206,30 +207,27 @@ let test_bufferSource_onended =
       bufferSource##start)
 
 let with_audioBuffer context uri fn =
-  Lwt.bind
-    XmlHttpRequest.(
-      perform_raw ~response_type:ArrayBuffer uri)
-    (fun response ->
-      Lwt.return (Js.Opt.iter
-        response.XmlHttpRequest.content
-        (fun arrayBuffer -> context##decodeAudioData arrayBuffer fn)))
+  let request = XmlHttpRequest.create () in
+  request##_open (Js.string "GET") (Js.string uri) Js._true;
+  request##send Js.null;
+  Js.Opt.iter
+    (File.CoerceTo.arrayBuffer (request##.response))
+    (fun arrayBuffer -> context##decodeAudioData arrayBuffer fn)
 
 let test_decodeAudioData =
   with_context_async
     (fun context wrapper ->
-      Lwt_js_events.async
-        (fun () ->
-          (with_audioBuffer context "data/sound.ogg"
-            (fun buffer ->
-              let bufferSource = context##createBufferSource in
-              bufferSource##.buffer := buffer;
+      with_audioBuffer context "data/sound.ogg"
+        (fun buffer ->
+          let bufferSource = context##createBufferSource in
+          bufferSource##.buffer := buffer;
 
-              bufferSource##.onended :=
-                Dom.handler (fun _ -> wrapper Async.noop; Js._false);
+          bufferSource##.onended :=
+            Dom.handler (fun _ -> wrapper Async.noop; Js._false);
 
-              bufferSource##connect
-                (context##.destination :> WebAudio.audioNode Js.t);
-              bufferSource##start))))
+          bufferSource##connect
+            (context##.destination :> WebAudio.audioNode Js.t);
+          bufferSource##start))
 
 let buffer =
   "buffer" >::: [
