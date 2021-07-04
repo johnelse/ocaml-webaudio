@@ -107,21 +107,23 @@ let test_bufferSource_onended =
       bufferSource##connect (context##.destination :> WebAudio.audioNode Js.t);
       bufferSource##start)
 
-let with_audioBuffer context uri fn =
-  let request = XmlHttpRequest.create () in
-  request##_open (Js.string "GET") (Js.string uri) Js._true;
-  request##send Js.null;
-  Js.Opt.iter
-    (File.CoerceTo.arrayBuffer (request##.response))
-    (fun arrayBuffer -> context##decodeAudioData arrayBuffer fn)
-
 let test_decodeAudioData =
   with_context_async
     (fun context wrapper ->
-      with_audioBuffer context "data/sound.ogg"
-        (fun buffer ->
+      let data_string = Rimshot.rimshot in
+      let data_length = String.length data_string in
+      let buffer = new%js Typed_array.arrayBuffer data_length in
+      let buffer_view = new%js Typed_array.uint8Array_fromBuffer buffer in
+
+      for i = 0 to data_length - 1 do
+        Typed_array.set buffer_view i (Char.code data_string.[i])
+      done;
+
+      context##decodeAudioData
+        buffer
+        (fun audioBuffer ->
           let bufferSource = context##createBufferSource in
-          bufferSource##.buffer := buffer;
+          bufferSource##.buffer := audioBuffer;
 
           bufferSource##.onended :=
             Dom.handler (fun _ -> wrapper Async.noop; Js._false);
@@ -140,4 +142,5 @@ let suite =
     "test_createBufferSource" >:: test_createBufferSource;
     "test_play_bufferSource" >:: test_play_bufferSource;
     "test_bufferSource_onended" >:~ test_bufferSource_onended;
+    "test_decodeAudioData" >:~ test_decodeAudioData;
   ]

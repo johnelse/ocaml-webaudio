@@ -1,7 +1,7 @@
 (executable
   (name test_runner)
   (modes js)
-  (modules buffer channels environment nodes offline oscillator test_common test_runner)
+  (modules buffer channels environment nodes offline oscillator rimshot test_common test_runner)
   (preprocess (pps js_of_ocaml-ppx))
   (libraries lwt webaudio webtest-js))
 
