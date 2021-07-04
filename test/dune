@@ -1,7 +1,7 @@
 (executable
   (name test_runner)
   (modes js)
-  (modules test_runner)
+  (modules test_common test_runner)
   (preprocess (pps js_of_ocaml-ppx))
   (libraries lwt webaudio webtest-js))
 

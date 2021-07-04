@@ -1,21 +1,9 @@
 open Js_of_ocaml
+open Test_common
 open Webtest.Suite
 
 let test_is_supported () =
   assert_equal (WebAudio.is_supported()) true
-
-let with_context_sync f =
-  Sync.bracket
-    (fun () -> new%js WebAudio.audioContext)
-    f
-    (fun context -> context##close)
-    ()
-
-let with_context_async f =
-  Async.bracket
-    (fun () -> new%js WebAudio.audioContext)
-    f
-    (fun context -> context##close)
 
 let with_offline_context_sync channels length sample_rate f =
   Sync.bracket
@@ -87,10 +75,6 @@ let environment =
     "test_destination" >:: test_destination;
   ]
 
-let buffer_length = 44100
-let sample_rate = 44100.0
-let pi = Js.math##._PI
-
 let test_createBuffer () =
   with_context_sync
     (fun context ->
@@ -126,16 +110,6 @@ let test_buffer_copyToChannel () =
       let buffer = context##createBuffer 1 buffer_length sample_rate in
       let src = new%js Typed_array.float32Array buffer_length in
       buffer##copyToChannel src 0 0)
-
-let fill_with_sine_wave array =
-  (* Fill buffer with a 440Hz sine wave. *)
-  let frequency = 440.0 in
-  let samples_per_period = sample_rate /. frequency in
-  for i = 0 to array##.length - 1 do
-    let amplitude =
-      sin (2.0 *. pi *. (float_of_int i) /. samples_per_period) in
-    Typed_array.set array i amplitude
-  done
 
 let test_buffer_copy_both_ways () =
   with_context_sync
